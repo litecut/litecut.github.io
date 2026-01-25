@@ -284,27 +284,15 @@ function resolveUrl(sourceUrl, baseUrl) {
   }
 }
 
-// Load media item from URL and return with duration
-async function loadMediaFromSourceUrl(mediaItem, baseUrl) {
+// Build media item from JSON (trust the duration from JSON, don't preload)
+function buildMediaItem(mediaItem, baseUrl) {
   const url = resolveUrl(mediaItem.source_url, baseUrl);
-
-  // Create element to verify it loads and get actual duration
-  const el = document.createElement(mediaItem.type);
-  el.crossOrigin = 'anonymous';
-  el.src = url;
-
-  await new Promise((resolve, reject) => {
-    el.onloadedmetadata = resolve;
-    el.onerror = () => reject(new Error(`Failed to load: ${mediaItem.name}`));
-    setTimeout(() => reject(new Error(`Timeout loading: ${mediaItem.name}`)), 15000);
-  });
-
   return {
     id: mediaItem.id,
     name: mediaItem.name,
     type: mediaItem.type,
     url: url,
-    duration: el.duration || mediaItem.duration,
+    duration: mediaItem.duration,
     isRemote: true
   };
 }
@@ -333,7 +321,7 @@ export async function loadProjectFromUrl(projectUrl, statusEl, renderCallbacks) 
       throw new Error(`Unsupported format: ${validation.version}`);
     }
 
-    statusEl.textContent = 'Loading media...';
+    statusEl.textContent = 'Loading project...';
 
     // Clear current state
     state.media.length = 0;
@@ -344,13 +332,10 @@ export async function loadProjectFromUrl(projectUrl, statusEl, renderCallbacks) 
     state.projectId = generateId();
     state.projectName = project.name;
 
-    // Load media items
-    const mediaLoadPromises = project.media_pool.map(m =>
-      loadMediaFromSourceUrl(m, projectUrl)
-    );
-
-    const loadedMedia = await Promise.all(mediaLoadPromises);
-    state.media.push(...loadedMedia);
+    // Build media items from JSON (no preloading)
+    for (const m of project.media_pool) {
+      state.media.push(buildMediaItem(m, projectUrl));
+    }
 
     // Load clips from tracks
     for (const clip of project.tracks.video) {
