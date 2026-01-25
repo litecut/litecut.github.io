@@ -62,6 +62,15 @@ export function renderTimeline(videoTrack, audioTrack, onSelect) {
 
     trackEl.appendChild(div);
   });
+
+  // Update track hint visibility
+  const videoHint = document.getElementById('video-hint');
+  const audioHint = document.getElementById('audio-hint');
+  const hasVideoClips = state.clips.some(c => c.track === 'video');
+  const hasAudioClips = state.clips.some(c => c.track === 'audio');
+
+  if (videoHint) videoHint.classList.toggle('hidden', hasVideoClips);
+  if (audioHint) audioHint.classList.toggle('hidden', hasAudioClips);
 }
 
 // Add clip to timeline

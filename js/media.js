@@ -79,6 +79,12 @@ export function renderMediaList(container) {
     });
     container.appendChild(div);
   });
+
+  // Update empty state visibility
+  const emptyState = document.getElementById('media-empty');
+  if (emptyState) {
+    emptyState.classList.toggle('hidden', state.media.length > 0);
+  }
 }
 
 // Get media item by ID

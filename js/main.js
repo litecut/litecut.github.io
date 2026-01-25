@@ -57,8 +57,10 @@ function handleSplit() {
   }
 }
 
-// Initialize ruler
+// Initialize
 renderCallbacks.renderRuler();
+renderCallbacks.renderTimeline(); // Initialize empty state visibility
+renderCallbacks.renderMediaList(); // Initialize empty state visibility
 
 // File input handler
 fileInput.addEventListener('change', async (e) => {
