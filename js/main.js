@@ -24,10 +24,17 @@ const btnRename = document.getElementById('btn-rename');
 const projectNameEl = document.getElementById('project-name');
 const projectListEl = document.getElementById('project-list');
 const saveStatus = document.getElementById('save-status');
+const previewEmpty = document.getElementById('preview-empty');
 
 // Update project name display
 function updateProjectName() {
   projectNameEl.textContent = state.projectName;
+}
+
+// Update preview empty state visibility
+function updatePreviewEmpty() {
+  const hasSource = preview.src && preview.src !== '' && preview.src !== window.location.href;
+  previewEmpty.classList.toggle('hidden', hasSource);
 }
 
 // Render callbacks for passing to other modules
@@ -77,6 +84,7 @@ function handleNew() {
   resetState();
   preview.src = '';
   preview.removeAttribute('src');
+  updatePreviewEmpty();
   renderCallbacks.renderMediaList();
   renderCallbacks.renderTimeline();
   renderCallbacks.renderRuler();
@@ -122,6 +130,7 @@ async function renderProjectList() {
       await loadProject(saveStatus, renderCallbacks, projectId);
       const firstVideo = state.media.find(m => m.type === 'video');
       if (firstVideo) preview.src = firstVideo.url;
+      updatePreviewEmpty();
     });
   });
 }
@@ -149,6 +158,7 @@ renderCallbacks.renderRuler();
 renderCallbacks.renderTimeline();
 renderCallbacks.renderMediaList();
 updateProjectName();
+updatePreviewEmpty();
 
 // File input handler
 fileInput.addEventListener('change', async (e) => {
@@ -176,6 +186,7 @@ fileInput.addEventListener('change', async (e) => {
       renderCallbacks.renderTimeline();
       renderCallbacks.renderRuler();
       preview.src = mediaItem.url;
+      updatePreviewEmpty();
     }
   });
 });
@@ -224,6 +235,7 @@ timeline.addEventListener('click', (e) => {
     const mediaItem = getMediaById(clip.mediaId);
     if (mediaItem && preview.src !== mediaItem.url) {
       preview.src = mediaItem.url;
+      updatePreviewEmpty();
     }
     preview.currentTime = time - clip.startTime;
   }
@@ -294,6 +306,7 @@ async function loadFromQueryString() {
     renderCallbacks.renderRuler();
 
     preview.src = trackUrl;
+    updatePreviewEmpty();
     saveStatus.textContent = `✓ Loaded: ${item.name}`;
   } catch (err) {
     saveStatus.textContent = `✗ Error loading URL: ${err.message}`;

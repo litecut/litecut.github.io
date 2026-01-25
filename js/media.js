@@ -73,7 +73,7 @@ export function renderMediaList(container) {
     div.draggable = true;
     div.dataset.id = m.id;
     // Use textContent to prevent XSS from malicious filenames
-    div.textContent = `${m.type === 'video' ? '🎬' : '🎵'} ${m.name} (${fmt(m.duration)})`;
+    div.textContent = `[${m.type}] ${m.name} (${fmt(m.duration)})`;
     div.addEventListener('dragstart', (e) => {
       e.dataTransfer.setData('text/plain', m.id);
     });
