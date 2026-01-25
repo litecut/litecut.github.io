@@ -1,5 +1,6 @@
 // IndexedDB storage operations
 import { state } from './state.js';
+import { validateProject } from './validation.js';
 
 const DB_NAME = 'litecut';
 const DB_VERSION = 1;
@@ -123,6 +124,14 @@ export async function loadProject(statusEl, renderCallbacks) {
 
     if (!project) {
       statusEl.textContent = 'No saved project found';
+      return null;
+    }
+
+    // Validate project structure
+    const validation = validateProject(project);
+    if (!validation.valid) {
+      console.error('Invalid project structure:', validation.errors);
+      statusEl.textContent = `✗ Invalid project: ${validation.errors[0]}`;
       return null;
     }
 

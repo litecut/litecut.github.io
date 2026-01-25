@@ -1,6 +1,7 @@
 // Media pool management
 import { state } from './state.js';
 import { fmt, generateId } from './utils.js';
+import { isValidMediaUrl } from './validation.js';
 
 // Add media item from file
 export async function addMediaFromFile(file) {
@@ -26,6 +27,12 @@ export async function addMediaFromFile(file) {
 
 // Add media item from URL
 export async function addMediaFromUrl(trackUrl) {
+  // Validate URL before loading
+  const urlValidation = isValidMediaUrl(trackUrl);
+  if (!urlValidation.valid) {
+    throw new Error(urlValidation.error);
+  }
+
   // Determine type from extension
   const ext = trackUrl.split('.').pop().toLowerCase().split('?')[0];
   const type = ['mp4', 'webm', 'mov', 'avi', 'mkv'].includes(ext) ? 'video' :
