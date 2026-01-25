@@ -309,6 +309,80 @@
       return `${m}:${sec.toString().padStart(2, '0')}`;
     };
 
+    // ==================== INPUT VALIDATION ====================
+
+    // Validate URL format and protocol
+    function isValidMediaUrl(urlString) {
+      try {
+        const url = new URL(urlString);
+        // Only allow http and https protocols
+        if (!['http:', 'https:'].includes(url.protocol)) {
+          return { valid: false, error: 'Only HTTP/HTTPS URLs are allowed' };
+        }
+        // Check for valid media extension
+        const ext = url.pathname.split('.').pop().toLowerCase();
+        const validExts = ['mp4', 'webm', 'mov', 'avi', 'mkv', 'mp3', 'wav', 'ogg', 'm4a', 'flac'];
+        if (!validExts.includes(ext)) {
+          return { valid: false, error: `Unsupported file type: .${ext}` };
+        }
+        return { valid: true };
+      } catch (e) {
+        return { valid: false, error: 'Invalid URL format' };
+      }
+    }
+
+    // Validate project JSON structure
+    function validateProject(project) {
+      const errors = [];
+
+      if (!project || typeof project !== 'object') {
+        return { valid: false, errors: ['Project must be an object'] };
+      }
+
+      // Check required fields
+      if (typeof project.otio_compat !== 'string') {
+        errors.push('Missing or invalid otio_compat field');
+      }
+
+      if (!Array.isArray(project.media_pool)) {
+        errors.push('Missing or invalid media_pool array');
+      } else {
+        project.media_pool.forEach((m, i) => {
+          if (typeof m.id !== 'string') errors.push(`media_pool[${i}]: missing id`);
+          if (typeof m.name !== 'string') errors.push(`media_pool[${i}]: missing name`);
+          if (typeof m.duration !== 'number' || m.duration < 0) errors.push(`media_pool[${i}]: invalid duration`);
+        });
+      }
+
+      if (!Array.isArray(project.tracks)) {
+        errors.push('Missing or invalid tracks array');
+      } else {
+        project.tracks.forEach((track, i) => {
+          if (typeof track.kind !== 'string') errors.push(`tracks[${i}]: missing kind`);
+          if (!Array.isArray(track.items)) errors.push(`tracks[${i}]: missing items array`);
+          else {
+            track.items.forEach((item, j) => {
+              if (item.type === 'clip') {
+                if (typeof item.id !== 'string') errors.push(`tracks[${i}].items[${j}]: missing id`);
+                if (typeof item.media_ref !== 'string') errors.push(`tracks[${i}].items[${j}]: missing media_ref`);
+                if (!item.timeline_range || typeof item.timeline_range.start !== 'number') {
+                  errors.push(`tracks[${i}].items[${j}]: invalid timeline_range`);
+                }
+              }
+            });
+          }
+        });
+      }
+
+      return { valid: errors.length === 0, errors };
+    }
+
+    // Sanitize string for safe display (prevent XSS in edge cases)
+    function sanitizeString(str, maxLength = 255) {
+      if (typeof str !== 'string') return '';
+      return str.slice(0, maxLength);
+    }
+
     // Render ruler
     function renderRuler() {
       ruler.innerHTML = '';
@@ -688,6 +762,14 @@
           return;
         }
 
+        // Validate project structure
+        const validation = validateProject(project);
+        if (!validation.valid) {
+          console.error('Invalid project structure:', validation.errors);
+          status.textContent = `✗ Invalid project: ${validation.errors[0]}`;
+          return;
+        }
+
         // Clear current state
         media.length = 0;
         clips.length = 0;
@@ -773,6 +855,14 @@
 
       const status = document.getElementById('save-status');
       status.textContent = 'Loading from URL...';
+
+      // Validate URL before loading
+      const urlValidation = isValidMediaUrl(trackUrl);
+      if (!urlValidation.valid) {
+        status.textContent = `✗ ${urlValidation.error}`;
+        console.error('Invalid track URL:', urlValidation.error);
+        return;
+      }
 
       try {
         // Determine type from extension
