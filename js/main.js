@@ -60,6 +60,10 @@ function handleSelectClip(clipId) {
 
 // Handle delete action
 function handleDelete() {
+  if (!state.selectedClipId) return;
+
+  if (!confirm('Delete this clip?')) return;
+
   if (deleteSelectedClip()) {
     renderCallbacks.renderTimeline();
     updateToolbar();
