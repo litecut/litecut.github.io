@@ -12,7 +12,51 @@ const preview = document.getElementById('preview');
 const timeDisplay = document.getElementById('time-display');
 const timeline = document.getElementById('timeline');
 
-console.log('LITECUT change=6');
+console.log('LITECUT change=7');
+
+// Audio element for audio track playback
+const audioEl = document.createElement('audio');
+audioEl.id = 'audio-player';
+document.body.appendChild(audioEl);
+
+let audioClips = [];
+let audioClipIndex = -1;
+
+function loadAudioClips() {
+  audioClips = state.clips.filter(c => c.track === 'audio').sort((a, b) => a.startTime - b.startTime);
+}
+
+function getAudioClipAt(time) {
+  return audioClips.findIndex(c => time >= c.startTime && time < c.startTime + c.duration);
+}
+
+function syncAudio(timelineTime) {
+  loadAudioClips();
+  const idx = getAudioClipAt(timelineTime);
+
+  if (idx < 0) {
+    // No audio at this time
+    audioEl.pause();
+    audioClipIndex = -1;
+    return;
+  }
+
+  const clip = audioClips[idx];
+  const media = getMediaById(clip.mediaId);
+  if (!media) return;
+
+  // Load new audio if clip changed
+  if (idx !== audioClipIndex) {
+    audioClipIndex = idx;
+    audioEl.src = media.url;
+  }
+
+  // Sync position within clip
+  const clipTime = timelineTime - clip.startTime + (clip.trimStart || 0);
+  if (Math.abs(audioEl.currentTime - clipTime) > 0.3) {
+    audioEl.currentTime = clipTime;
+  }
+}
 
 // Dual video for seamless playback
 const videoB = document.createElement('video');
@@ -55,6 +99,10 @@ function playClip(index) {
     nextVideo.src = nextUrl;
     nextVideo.load();
   }
+
+  // Initialize audio at this timeline position
+  const timelineTime = clips[index].startTime;
+  syncAudio(timelineTime);
 
   updatePreviewEmpty();
 }
@@ -160,10 +208,14 @@ function handleNew() {
   resetState();
   clipIndex = -1;
   clips = [];
+  audioClipIndex = -1;
+  audioClips = [];
   preview.src = '';
   preview.removeAttribute('src');
   videoB.src = '';
   videoB.removeAttribute('src');
+  audioEl.src = '';
+  audioEl.removeAttribute('src');
   activeVideo = preview;
   nextVideo = videoB;
   preview.style.display = 'block';
@@ -290,13 +342,19 @@ btnLoad.addEventListener('click', (e) => {
   toggleProjectList();
 });
 
-// Time update - move playhead
+// Time update - move playhead and sync audio
 function onTimeUpdate() {
   const clip = clips[clipIndex];
   state.currentTime = clip ? clip.startTime + activeVideo.currentTime : activeVideo.currentTime;
   timeDisplay.textContent = `${fmt(state.currentTime)} / ${fmt(state.duration)}`;
   playhead.style.left = `${10 + state.currentTime * PX_PER_SEC}px`;
   updateToolbar();
+
+  // Sync audio playback
+  syncAudio(state.currentTime);
+  if (!activeVideo.paused && audioClipIndex >= 0 && audioEl.paused) {
+    audioEl.play();
+  }
 }
 preview.addEventListener('timeupdate', onTimeUpdate);
 videoB.addEventListener('timeupdate', onTimeUpdate);
@@ -323,6 +381,9 @@ timeline.addEventListener('click', (e) => {
   playhead.style.left = `${10 + time * PX_PER_SEC}px`;
   updateToolbar();
 
+  // Sync audio to new position
+  syncAudio(time);
+
   if (e.target === timeline || e.target.classList.contains('track')) {
     handleSelectClip(null);
   }
@@ -348,8 +409,13 @@ document.addEventListener('keydown', (e) => {
   switch (e.code) {
     case 'Space':
       e.preventDefault();
-      if (activeVideo.paused) activeVideo.play();
-      else activeVideo.pause();
+      if (activeVideo.paused) {
+        activeVideo.play();
+        if (audioClipIndex >= 0) audioEl.play();
+      } else {
+        activeVideo.pause();
+        audioEl.pause();
+      }
       break;
     case 'KeyS':
       e.preventDefault();
