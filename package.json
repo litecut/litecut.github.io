@@ -5,7 +5,8 @@
   "main": "index.html",
   "scripts": {
     "start": "npx serve .",
-    "dev": "npx serve ."
+    "dev": "npx serve .",
+    "test": "echo 'Open tests/test.html in a browser to run tests'"
   },
   "repository": {
     "type": "git",

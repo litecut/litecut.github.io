@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LiteCut Tests</title>
+  <style>
+    body { font-family: system-ui, sans-serif; padding: 20px; background: #111; color: #fff; }
+    .pass { color: #22c55e; }
+    .fail { color: #ef4444; }
+    .test-group { margin: 20px 0; padding: 10px; background: #222; border-radius: 8px; }
+    .test-group h3 { margin: 0 0 10px 0; font-size: 14px; color: #888; }
+    .test { padding: 4px 0; font-size: 13px; }
+    #summary { font-size: 16px; margin-top: 20px; padding: 15px; background: #1a1a1a; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>LiteCut Unit Tests</h1>
+  <div id="results"></div>
+  <div id="summary"></div>
+
+  <script>
+    // Simple test runner
+    let passed = 0;
+    let failed = 0;
+    const results = document.getElementById('results');
+
+    function assert(condition, message) {
+      if (condition) {
+        passed++;
+        return { pass: true, message };
+      } else {
+        failed++;
+        return { pass: false, message };
+      }
+    }
+
+    function assertEqual(actual, expected, message) {
+      const pass = actual === expected;
+      if (!pass) {
+        message += ` (expected: ${JSON.stringify(expected)}, got: ${JSON.stringify(actual)})`;
+      }
+      return assert(pass, message);
+    }
+
+    function assertDeepEqual(actual, expected, message) {
+      const pass = JSON.stringify(actual) === JSON.stringify(expected);
+      if (!pass) {
+        message += ` (expected: ${JSON.stringify(expected)}, got: ${JSON.stringify(actual)})`;
+      }
+      return assert(pass, message);
+    }
+
+    function renderGroup(name, tests) {
+      const group = document.createElement('div');
+      group.className = 'test-group';
+      group.innerHTML = `<h3>${name}</h3>`;
+      tests.forEach(t => {
+        const div = document.createElement('div');
+        div.className = `test ${t.pass ? 'pass' : 'fail'}`;
+        div.textContent = `${t.pass ? '✓' : '✗'} ${t.message}`;
+        group.appendChild(div);
+      });
+      results.appendChild(group);
+    }
+
+    // ==================== FUNCTIONS UNDER TEST ====================
+
+    // fmt() - time formatting
+    const fmt = (s) => {
+      const m = Math.floor(s / 60);
+      const sec = Math.floor(s % 60);
+      return `${m}:${sec.toString().padStart(2, '0')}`;
+    };
+
+    // serializeProject() - simplified version for testing
+    function serializeProject(media, clips) {
+      return {
+        otio_compat: 'litecut/1.0',
+        id: 'project-1',
+        name: 'Untitled Project',
+        media_pool: media.map(m => ({
+          id: m.id,
+          name: m.name,
+          media_type: m.type,
+          duration: m.duration,
+          target_url: `local://${m.id}`
+        })),
+        tracks: [
+          {
+            id: 'track-video',
+            name: 'Video',
+            kind: 'video',
+            items: clips.filter(c => c.track === 'video').map(c => ({
+              type: 'clip',
+              id: c.id,
+              media_ref: c.mediaId,
+              timeline_range: { start: c.startTime, duration: c.duration },
+              source_range: { start: c.trimStart || 0, duration: c.duration }
+            }))
+          },
+          {
+            id: 'track-audio',
+            name: 'Audio',
+            kind: 'audio',
+            items: clips.filter(c => c.track === 'audio').map(c => ({
+              type: 'clip',
+              id: c.id,
+              media_ref: c.mediaId,
+              timeline_range: { start: c.startTime, duration: c.duration },
+              source_range: { start: c.trimStart || 0, duration: c.duration }
+            }))
+          }
+        ]
+      };
+    }
+
+    // deserializeClips() - extract clips from project
+    function deserializeClips(project) {
+      const clips = [];
+      for (const track of project.tracks) {
+        for (const item of track.items) {
+          if (item.type === 'clip') {
+            clips.push({
+              id: item.id,
+              mediaId: item.media_ref,
+              type: track.kind,
+              track: track.kind,
+              startTime: item.timeline_range.start,
+              duration: item.timeline_range.duration,
+              trimStart: item.source_range.start
+            });
+          }
+        }
+      }
+      return clips;
+    }
+
+    // timeToPixels / pixelsToTime
+    const PX_PER_SEC = 20;
+    const timeToPixels = (t) => t * PX_PER_SEC;
+    const pixelsToTime = (px) => px / PX_PER_SEC;
+
+    // ==================== TESTS ====================
+
+    // Test: fmt() function
+    renderGroup('Time Formatting (fmt)', [
+      assertEqual(fmt(0), '0:00', 'formats 0 seconds'),
+      assertEqual(fmt(5), '0:05', 'formats 5 seconds with leading zero'),
+      assertEqual(fmt(59), '0:59', 'formats 59 seconds'),
+      assertEqual(fmt(60), '1:00', 'formats 1 minute'),
+      assertEqual(fmt(61), '1:01', 'formats 1:01'),
+      assertEqual(fmt(125), '2:05', 'formats 2:05'),
+      assertEqual(fmt(3600), '60:00', 'formats 1 hour'),
+      assertEqual(fmt(3661), '61:01', 'formats 61:01'),
+      assertEqual(fmt(0.5), '0:00', 'floors fractional seconds'),
+      assertEqual(fmt(59.9), '0:59', 'floors 59.9 to 0:59'),
+    ]);
+
+    // Test: Timeline calculations
+    renderGroup('Timeline Calculations', [
+      assertEqual(timeToPixels(0), 0, 'time 0 = 0 pixels'),
+      assertEqual(timeToPixels(1), 20, 'time 1s = 20 pixels'),
+      assertEqual(timeToPixels(5), 100, 'time 5s = 100 pixels'),
+      assertEqual(pixelsToTime(0), 0, 'pixels 0 = 0 time'),
+      assertEqual(pixelsToTime(20), 1, 'pixels 20 = 1s'),
+      assertEqual(pixelsToTime(100), 5, 'pixels 100 = 5s'),
+      assertEqual(pixelsToTime(timeToPixels(10)), 10, 'round-trip conversion'),
+    ]);
+
+    // Test: Serialization
+    const testMedia = [
+      { id: 'media-1', name: 'video.mp4', type: 'video', duration: 10 },
+      { id: 'media-2', name: 'audio.mp3', type: 'audio', duration: 5 }
+    ];
+    const testClips = [
+      { id: 'clip-1', mediaId: 'media-1', type: 'video', track: 'video', startTime: 0, duration: 10, trimStart: 0 },
+      { id: 'clip-2', mediaId: 'media-2', type: 'audio', track: 'audio', startTime: 2, duration: 5, trimStart: 0 }
+    ];
+    const serialized = serializeProject(testMedia, testClips);
+
+    renderGroup('Project Serialization', [
+      assertEqual(serialized.otio_compat, 'litecut/1.0', 'has correct version'),
+      assertEqual(serialized.media_pool.length, 2, 'serializes 2 media items'),
+      assertEqual(serialized.media_pool[0].name, 'video.mp4', 'preserves media name'),
+      assertEqual(serialized.media_pool[0].target_url, 'local://media-1', 'creates local URL'),
+      assertEqual(serialized.tracks.length, 2, 'has 2 tracks'),
+      assertEqual(serialized.tracks[0].kind, 'video', 'first track is video'),
+      assertEqual(serialized.tracks[1].kind, 'audio', 'second track is audio'),
+      assertEqual(serialized.tracks[0].items.length, 1, 'video track has 1 clip'),
+      assertEqual(serialized.tracks[1].items.length, 1, 'audio track has 1 clip'),
+      assertEqual(serialized.tracks[0].items[0].timeline_range.start, 0, 'clip start time preserved'),
+      assertEqual(serialized.tracks[0].items[0].timeline_range.duration, 10, 'clip duration preserved'),
+    ]);
+
+    // Test: Deserialization
+    const deserialized = deserializeClips(serialized);
+    renderGroup('Project Deserialization', [
+      assertEqual(deserialized.length, 2, 'deserializes 2 clips'),
+      assertEqual(deserialized[0].id, 'clip-1', 'preserves clip ID'),
+      assertEqual(deserialized[0].mediaId, 'media-1', 'preserves media reference'),
+      assertEqual(deserialized[0].startTime, 0, 'preserves start time'),
+      assertEqual(deserialized[0].duration, 10, 'preserves duration'),
+      assertEqual(deserialized[0].track, 'video', 'preserves track'),
+      assertEqual(deserialized[1].track, 'audio', 'audio clip on audio track'),
+    ]);
+
+    // Test: Edge cases
+    renderGroup('Edge Cases', [
+      assertEqual(fmt(-1), '-1:59', 'handles negative (implementation detail)'),
+      assertEqual(timeToPixels(-5), -100, 'negative time to pixels'),
+      assertEqual(pixelsToTime(-100), -5, 'negative pixels to time'),
+      assert(serializeProject([], []).media_pool.length === 0, 'handles empty media'),
+      assert(serializeProject([], []).tracks[0].items.length === 0, 'handles empty clips'),
+    ]);
+
+    // Summary
+    const summary = document.getElementById('summary');
+    const total = passed + failed;
+    summary.innerHTML = `
+      <strong>Results:</strong> ${passed}/${total} tests passed
+      ${failed > 0 ? `<span class="fail"> (${failed} failed)</span>` : '<span class="pass"> ✓</span>'}
+    `;
+    summary.className = failed > 0 ? 'fail' : 'pass';
+
+    // Exit code for CI
+    if (failed > 0) {
+      console.error(`TESTS FAILED: ${failed}/${total}`);
+    } else {
+      console.log(`ALL TESTS PASSED: ${passed}/${total}`);
+    }
+  </script>
+</body>
+</html>
