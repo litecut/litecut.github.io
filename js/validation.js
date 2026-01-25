@@ -66,6 +66,119 @@ export function validateProject(project) {
   return { valid: errors.length === 0, errors };
 }
 
+// Validate litecut/0.0.1 project format
+export function validateProjectV001(project) {
+  const errors = [];
+
+  if (!project || typeof project !== 'object') {
+    return { valid: false, errors: ['Project must be an object'] };
+  }
+
+  // Check version
+  if (project.version !== 'litecut/0.0.1') {
+    errors.push(`Unsupported version: ${project.version} (expected litecut/0.0.1)`);
+  }
+
+  // Check name
+  if (typeof project.name !== 'string' || !project.name.trim()) {
+    errors.push('Missing or invalid project name');
+  }
+
+  // Check media_pool
+  if (!Array.isArray(project.media_pool)) {
+    errors.push('Missing or invalid media_pool array');
+  } else {
+    const mediaIds = new Set();
+    project.media_pool.forEach((m, i) => {
+      if (typeof m.id !== 'string' || !m.id) {
+        errors.push(`media_pool[${i}]: missing or invalid id`);
+      } else if (mediaIds.has(m.id)) {
+        errors.push(`media_pool[${i}]: duplicate id "${m.id}"`);
+      } else {
+        mediaIds.add(m.id);
+      }
+      if (typeof m.name !== 'string') errors.push(`media_pool[${i}]: missing name`);
+      if (!['video', 'audio'].includes(m.type)) {
+        errors.push(`media_pool[${i}]: invalid type "${m.type}" (must be video or audio)`);
+      }
+      if (typeof m.source_url !== 'string' || !m.source_url) {
+        errors.push(`media_pool[${i}]: missing source_url`);
+      }
+      if (typeof m.duration !== 'number' || m.duration < 0) {
+        errors.push(`media_pool[${i}]: invalid duration`);
+      }
+    });
+  }
+
+  // Check tracks
+  if (!project.tracks || typeof project.tracks !== 'object') {
+    errors.push('Missing or invalid tracks object');
+  } else {
+    if (!Array.isArray(project.tracks.video)) {
+      errors.push('Missing or invalid tracks.video array');
+    }
+    if (!Array.isArray(project.tracks.audio)) {
+      errors.push('Missing or invalid tracks.audio array');
+    }
+
+    // Validate clips in each track
+    const validateClips = (clips, trackName) => {
+      const clipIds = new Set();
+      clips.forEach((clip, i) => {
+        if (typeof clip.id !== 'string' || !clip.id) {
+          errors.push(`tracks.${trackName}[${i}]: missing or invalid id`);
+        } else if (clipIds.has(clip.id)) {
+          errors.push(`tracks.${trackName}[${i}]: duplicate id "${clip.id}"`);
+        } else {
+          clipIds.add(clip.id);
+        }
+        if (typeof clip.media_id !== 'string' || !clip.media_id) {
+          errors.push(`tracks.${trackName}[${i}]: missing media_id`);
+        }
+        if (typeof clip.start_time !== 'number' || clip.start_time < 0) {
+          errors.push(`tracks.${trackName}[${i}]: invalid start_time`);
+        }
+        if (typeof clip.duration !== 'number' || clip.duration <= 0) {
+          errors.push(`tracks.${trackName}[${i}]: invalid duration`);
+        }
+      });
+    };
+
+    if (Array.isArray(project.tracks.video)) {
+      validateClips(project.tracks.video, 'video');
+    }
+    if (Array.isArray(project.tracks.audio)) {
+      validateClips(project.tracks.audio, 'audio');
+    }
+  }
+
+  return { valid: errors.length === 0, errors };
+}
+
+// Detect project format version and validate accordingly
+export function detectAndValidateProject(project) {
+  if (!project || typeof project !== 'object') {
+    return { valid: false, errors: ['Project must be an object'], version: null };
+  }
+
+  // Check for litecut/0.0.1 format
+  if (project.version && project.version.startsWith('litecut/')) {
+    if (project.version === 'litecut/0.0.1') {
+      const result = validateProjectV001(project);
+      return { ...result, version: 'litecut/0.0.1' };
+    }
+    return { valid: false, errors: [`Unsupported version: ${project.version}`], version: project.version };
+  }
+
+  // Check for legacy internal format (otio_compat)
+  if (project.otio_compat) {
+    const result = validateProject(project);
+    return { ...result, version: 'internal' };
+  }
+
+  return { valid: false, errors: ['Unknown project format'], version: null };
+}
+
 // Sanitize string for safe display
 export function sanitizeString(str, maxLength = 255) {
   if (typeof str !== 'string') return '';
