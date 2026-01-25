@@ -146,6 +146,14 @@ export function getClipAtTime(time, trackType = null) {
   );
 }
 
+// Get next clip after a given time on a track
+export function getNextClip(time, trackType) {
+  const trackClips = state.clips
+    .filter(c => c.type === trackType && c.startTime >= time)
+    .sort((a, b) => a.startTime - b.startTime);
+  return trackClips[0] || null;
+}
+
 // Check if playhead is over a clip
 export function canSplit() {
   return state.clips.some(c =>

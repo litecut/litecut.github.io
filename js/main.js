@@ -2,7 +2,7 @@
 import { state, PX_PER_SEC, selectClip, resetState } from './state.js';
 import { fmt } from './utils.js';
 import { addMediaFromFile, addMediaFromUrl, renderMediaList, getMediaById } from './media.js';
-import { renderRuler, renderTimeline, addClip, deleteSelectedClip, splitAtPlayhead, getClipAtTime, canSplit } from './timeline.js';
+import { renderRuler, renderTimeline, addClip, deleteSelectedClip, splitAtPlayhead, getClipAtTime, getNextClip, canSplit } from './timeline.js';
 import { saveProject, loadProject, listProjects, loadProjectFromUrl } from './storage.js';
 
 // DOM Elements
@@ -225,6 +225,22 @@ preview.addEventListener('timeupdate', () => {
   timeDisplay.textContent = `${fmt(state.currentTime)} / ${fmt(state.duration)}`;
   playhead.style.left = `${10 + state.currentTime * PX_PER_SEC}px`;
   updateToolbar();
+});
+
+// Handle video ended - advance to next clip
+preview.addEventListener('ended', () => {
+  // Find next video clip after current time
+  const nextClip = getNextClip(state.currentTime + 0.01, 'video');
+
+  if (nextClip) {
+    const mediaItem = getMediaById(nextClip.mediaId);
+    if (mediaItem) {
+      preview.src = mediaItem.url;
+      preview.currentTime = nextClip.trimStart || 0;
+      updatePreviewEmpty();
+      preview.play();
+    }
+  }
 });
 
 // Timeline click to seek
