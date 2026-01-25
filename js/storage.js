@@ -23,12 +23,22 @@ export function openDB() {
   });
 }
 
+// Generate unique project ID
+function generateProjectId() {
+  return `project-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
 // Serialize project to OTIO-inspired format
 export function serializeProject() {
+  // Generate ID if new project
+  if (!state.projectId) {
+    state.projectId = generateProjectId();
+  }
+
   return {
     otio_compat: 'litecut/1.0',
-    id: 'project-1',
-    name: 'Untitled Project',
+    id: state.projectId,
+    name: state.projectName,
     created: new Date().toISOString(),
     modified: new Date().toISOString(),
     rate: 30,
@@ -70,6 +80,28 @@ export function serializeProject() {
   };
 }
 
+// List all saved projects
+export async function listProjects() {
+  const db = await openDB();
+  const tx = db.transaction('projects', 'readonly');
+  const store = tx.objectStore('projects');
+
+  return new Promise((resolve, reject) => {
+    const req = store.getAll();
+    req.onsuccess = () => {
+      const projects = req.result.map(p => ({
+        id: p.id,
+        name: p.name,
+        modified: p.modified
+      }));
+      // Sort by modified date, newest first
+      projects.sort((a, b) => new Date(b.modified) - new Date(a.modified));
+      resolve(projects);
+    };
+    req.onerror = reject;
+  });
+}
+
 // Save project to IndexedDB
 export async function saveProject(statusEl) {
   try {
@@ -97,7 +129,7 @@ export async function saveProject(statusEl) {
       req.onerror = reject;
     });
 
-    statusEl.textContent = `✓ Saved at ${new Date().toLocaleTimeString()}`;
+    statusEl.textContent = `✓ Saved "${state.projectName}" at ${new Date().toLocaleTimeString()}`;
     console.log('Saved project:', project);
     return project;
   } catch (err) {
@@ -107,23 +139,33 @@ export async function saveProject(statusEl) {
   }
 }
 
-// Load project from IndexedDB
-export async function loadProject(statusEl, renderCallbacks) {
+// Load project from IndexedDB by ID
+export async function loadProject(statusEl, renderCallbacks, projectId = null) {
   try {
     statusEl.textContent = 'Loading...';
     const db = await openDB();
+
+    // If no projectId specified, get the most recent project
+    if (!projectId) {
+      const projects = await listProjects();
+      if (projects.length === 0) {
+        statusEl.textContent = 'No saved projects found';
+        return null;
+      }
+      projectId = projects[0].id;
+    }
 
     // Load project JSON
     const projTx = db.transaction('projects', 'readonly');
     const projStore = projTx.objectStore('projects');
     const project = await new Promise((resolve, reject) => {
-      const req = projStore.get('project-1');
+      const req = projStore.get(projectId);
       req.onsuccess = () => resolve(req.result);
       req.onerror = reject;
     });
 
     if (!project) {
-      statusEl.textContent = 'No saved project found';
+      statusEl.textContent = 'Project not found';
       return null;
     }
 
@@ -138,6 +180,10 @@ export async function loadProject(statusEl, renderCallbacks) {
     // Clear current state
     state.media.length = 0;
     state.clips.length = 0;
+
+    // Set project info
+    state.projectId = project.id;
+    state.projectName = project.name || 'Untitled Project';
 
     // Load media files
     const mediaTx = db.transaction('media', 'readonly');
@@ -191,9 +237,12 @@ export async function loadProject(statusEl, renderCallbacks) {
       renderCallbacks.renderTimeline();
       renderCallbacks.renderRuler();
       renderCallbacks.updateToolbar();
+      if (renderCallbacks.updateProjectName) {
+        renderCallbacks.updateProjectName();
+      }
     }
 
-    statusEl.textContent = `✓ Loaded project`;
+    statusEl.textContent = `✓ Loaded "${state.projectName}"`;
     console.log('Loaded project:', project);
     return project;
   } catch (err) {
@@ -201,4 +250,17 @@ export async function loadProject(statusEl, renderCallbacks) {
     console.error('Load error:', err);
     throw err;
   }
+}
+
+// Delete a project by ID
+export async function deleteProject(projectId) {
+  const db = await openDB();
+  const tx = db.transaction('projects', 'readwrite');
+  const store = tx.objectStore('projects');
+
+  return new Promise((resolve, reject) => {
+    const req = store.delete(projectId);
+    req.onsuccess = resolve;
+    req.onerror = reject;
+  });
 }
