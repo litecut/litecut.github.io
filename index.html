@@ -58,10 +58,19 @@
     <!-- 4. Project -->
     <section>
       <h2>4. Project</h2>
-      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-        <button id="btn-save">💾 Save Project</button>
-        <button id="btn-load">📂 Load Project</button>
-        <button id="btn-export" onclick="alert('Export coming soon!')">🎬 Export Video</button>
+      <div class="project-header">
+        <span class="project-name-label">📝</span>
+        <span id="project-name" class="project-name">Untitled Project</span>
+        <button id="btn-rename" class="btn-small">Rename</button>
+      </div>
+      <div class="project-actions">
+        <button id="btn-new">➕ New</button>
+        <button id="btn-save">💾 Save</button>
+        <div class="dropdown">
+          <button id="btn-load">📂 Open</button>
+          <div id="project-list" class="dropdown-content"></div>
+        </div>
+        <button id="btn-export" onclick="alert('Export coming soon!')">🎬 Export</button>
       </div>
       <div id="save-status" style="margin-top: 10px; font-size: 12px; color: #888;"></div>
     </section>
