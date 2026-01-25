@@ -3,7 +3,7 @@ import { state, PX_PER_SEC, selectClip, resetState } from './state.js';
 import { fmt } from './utils.js';
 import { addMediaFromFile, addMediaFromUrl, renderMediaList, getMediaById } from './media.js';
 import { renderRuler, renderTimeline, addClip, deleteSelectedClip, splitAtPlayhead, getClipAtTime, canSplit } from './timeline.js';
-import { saveProject, loadProject, listProjects } from './storage.js';
+import { saveProject, loadProject, listProjects, loadProjectFromUrl } from './storage.js';
 
 // DOM Elements
 const fileInput = document.getElementById('file-input');
@@ -295,8 +295,27 @@ document.addEventListener('keydown', (e) => {
 // Load from query string
 async function loadFromQueryString() {
   const params = new URLSearchParams(window.location.search);
-  const trackUrl = params.get('track');
 
+  // Check for project URL first (litecut/0.0.1 format)
+  const projectUrl = params.get('project');
+  if (projectUrl) {
+    try {
+      await loadProjectFromUrl(projectUrl, saveStatus, renderCallbacks);
+      updateProjectName();
+      // Set preview to first video
+      const firstVideo = state.media.find(m => m.type === 'video');
+      if (firstVideo) {
+        preview.src = firstVideo.url;
+      }
+      updatePreviewEmpty();
+    } catch (err) {
+      console.error('Failed to load project:', err);
+    }
+    return;
+  }
+
+  // Check for single track URL (simple mode)
+  const trackUrl = params.get('track');
   if (!trackUrl) return;
 
   saveStatus.textContent = 'Loading from URL...';
@@ -311,9 +330,9 @@ async function loadFromQueryString() {
 
     preview.src = trackUrl;
     updatePreviewEmpty();
-    saveStatus.textContent = `✓ Loaded: ${item.name}`;
+    saveStatus.textContent = `Loaded: ${item.name}`;
   } catch (err) {
-    saveStatus.textContent = `✗ Error loading URL: ${err.message}`;
+    saveStatus.textContent = `Error loading URL: ${err.message}`;
     console.error('Failed to load track:', err);
   }
 }

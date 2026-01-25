@@ -1,6 +1,7 @@
 // IndexedDB storage operations
 import { state } from './state.js';
-import { validateProject } from './validation.js';
+import { validateProject, validateProjectV001, detectAndValidateProject } from './validation.js';
+import { generateId } from './utils.js';
 
 const DB_NAME = 'litecut';
 const DB_VERSION = 1;
@@ -263,4 +264,140 @@ export async function deleteProject(projectId) {
     req.onsuccess = resolve;
     req.onerror = reject;
   });
+}
+
+// Resolve relative URL against base URL
+function resolveUrl(sourceUrl, baseUrl) {
+  try {
+    // If it's already absolute, return as-is
+    new URL(sourceUrl);
+    return sourceUrl;
+  } catch (e) {
+    // Relative URL - resolve against base
+    if (baseUrl) {
+      const base = new URL(baseUrl);
+      // Get directory of base URL
+      const baseDir = base.href.substring(0, base.href.lastIndexOf('/') + 1);
+      return new URL(sourceUrl, baseDir).href;
+    }
+    return sourceUrl;
+  }
+}
+
+// Load media item from URL and return with duration
+async function loadMediaFromSourceUrl(mediaItem, baseUrl) {
+  const url = resolveUrl(mediaItem.source_url, baseUrl);
+
+  // Create element to verify it loads and get actual duration
+  const el = document.createElement(mediaItem.type);
+  el.crossOrigin = 'anonymous';
+  el.src = url;
+
+  await new Promise((resolve, reject) => {
+    el.onloadedmetadata = resolve;
+    el.onerror = () => reject(new Error(`Failed to load: ${mediaItem.name}`));
+    setTimeout(() => reject(new Error(`Timeout loading: ${mediaItem.name}`)), 15000);
+  });
+
+  return {
+    id: mediaItem.id,
+    name: mediaItem.name,
+    type: mediaItem.type,
+    url: url,
+    duration: el.duration || mediaItem.duration,
+    isRemote: true
+  };
+}
+
+// Load project from remote URL (litecut/0.0.1 format)
+export async function loadProjectFromUrl(projectUrl, statusEl, renderCallbacks) {
+  try {
+    statusEl.textContent = 'Fetching project...';
+
+    // Fetch the project JSON
+    const response = await fetch(projectUrl);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const project = await response.json();
+
+    // Detect and validate format
+    const validation = detectAndValidateProject(project);
+    if (!validation.valid) {
+      console.error('Project validation errors:', validation.errors);
+      throw new Error(validation.errors[0]);
+    }
+
+    if (validation.version !== 'litecut/0.0.1') {
+      throw new Error(`Unsupported format: ${validation.version}`);
+    }
+
+    statusEl.textContent = 'Loading media...';
+
+    // Clear current state
+    state.media.length = 0;
+    state.clips.length = 0;
+    state.selectedClipId = null;
+
+    // Set project info (generate new ID for remote projects)
+    state.projectId = generateId();
+    state.projectName = project.name;
+
+    // Load media items
+    const mediaLoadPromises = project.media_pool.map(m =>
+      loadMediaFromSourceUrl(m, projectUrl)
+    );
+
+    const loadedMedia = await Promise.all(mediaLoadPromises);
+    state.media.push(...loadedMedia);
+
+    // Load clips from tracks
+    for (const clip of project.tracks.video) {
+      state.clips.push({
+        id: clip.id,
+        mediaId: clip.media_id,
+        type: 'video',
+        track: 'video',
+        startTime: clip.start_time,
+        duration: clip.duration,
+        trimStart: clip.trim_start || 0
+      });
+    }
+
+    for (const clip of project.tracks.audio) {
+      state.clips.push({
+        id: clip.id,
+        mediaId: clip.media_id,
+        type: 'audio',
+        track: 'audio',
+        startTime: clip.start_time,
+        duration: clip.duration,
+        trimStart: clip.trim_start || 0
+      });
+    }
+
+    // Update duration
+    const maxEnd = state.clips.reduce((max, c) => Math.max(max, c.startTime + c.duration), 30);
+    state.duration = maxEnd + 5;
+
+    // Re-render everything
+    if (renderCallbacks) {
+      renderCallbacks.renderMediaList();
+      renderCallbacks.renderTimeline();
+      renderCallbacks.renderRuler();
+      renderCallbacks.updateToolbar();
+      if (renderCallbacks.updateProjectName) {
+        renderCallbacks.updateProjectName();
+      }
+    }
+
+    statusEl.textContent = `Loaded "${state.projectName}" from URL`;
+    console.log('Loaded project from URL:', project);
+    return project;
+  } catch (err) {
+    statusEl.textContent = `Error: ${err.message}`;
+    console.error('Load from URL error:', err);
+    throw err;
+  }
 }
