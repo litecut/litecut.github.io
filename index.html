@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LiteCut</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #111; color: #fff; font-family: system-ui, sans-serif; }
+
+    #app { padding: 20px; max-width: 1200px; margin: 0 auto; }
+
+    h1 {
+      font-size: 20px;
+      margin: 0 0 24px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Simple sections stacked vertically */
+    section {
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #222;
+    }
+    section:last-child { border-bottom: none; }
+    section h2 {
+      font-size: 12px;
+      color: #666;
+      margin: 0 0 12px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* File input - styled as button */
+    input[type="file"] {
+      color: #fff;
+    }
+    input[type="file"]::file-selector-button {
+      background: #333;
+      color: #fff;
+      border: 1px solid #444;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      margin-right: 12px;
+      transition: all 0.2s;
+    }
+    input[type="file"]::file-selector-button:hover {
+      background: #444;
+      border-color: #555;
+    }
+
+    /* Video with NATIVE controls */
+    #preview {
+      width: 100%;
+      max-width: 800px;
+      background: #000;
+      display: block;
+    }
+
+    /* Simple timeline */
+    #timeline {
+      background: #222;
+      border-radius: 8px;
+      padding: 10px;
+      min-height: 100px;
+      position: relative;
+    }
+
+    /* Ruler */
+    #ruler {
+      height: 24px;
+      background: #1a1a1a;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .ruler-mark {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      border-left: 1px solid #444;
+      padding-left: 4px;
+      font-size: 10px;
+      color: #666;
+      line-height: 24px;
+    }
+
+    .track {
+      background: #333;
+      border-radius: 4px;
+      height: 50px;
+      margin-bottom: 8px;
+      position: relative;
+      overflow: visible;
+    }
+
+    .track-label {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 12px;
+      color: #666;
+      z-index: 1;
+    }
+
+    .clip {
+      position: absolute;
+      top: 4px;
+      height: calc(100% - 8px);
+      background: #6366f1;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      font-size: 11px;
+      cursor: move;
+      user-select: none;
+    }
+
+    .clip.audio { background: #22c55e; }
+    .clip.selected {
+      outline: 2px solid #fff;
+      outline-offset: 1px;
+    }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .toolbar button {
+      background: #333;
+      padding: 6px 12px;
+      font-size: 12px;
+      box-shadow: none;
+    }
+    .toolbar button:hover {
+      background: #444;
+      transform: none;
+      box-shadow: none;
+    }
+    .toolbar button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .toolbar .shortcut {
+      color: #666;
+      margin-left: 6px;
+      font-size: 10px;
+    }
+
+    #playhead {
+      position: absolute;
+      top: 10px;
+      width: 2px;
+      height: calc(100% - 20px);
+      background: #ef4444;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    #playhead::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: -5px;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 8px solid #ef4444;
+    }
+
+    /* Current time display */
+    #time-display {
+      font-family: monospace;
+      font-size: 14px;
+      margin: 10px 0;
+    }
+
+    /* Controls row */
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin: 10px 0;
+    }
+
+    button {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
+    }
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(99, 102, 241, 0.4);
+    }
+    button:active {
+      transform: translateY(0);
+    }
+
+    /* Media list */
+    .media-item {
+      background: linear-gradient(135deg, #1e1e1e 0%, #252525 100%);
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-top: 10px;
+      cursor: grab;
+      font-size: 13px;
+      border: 1px solid #333;
+      transition: all 0.2s;
+    }
+    .media-item:hover {
+      border-color: #6366f1;
+      background: linear-gradient(135deg, #252525 0%, #2a2a2a 100%);
+    }
+    .media-item:active { cursor: grabbing; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>✂️ LiteCut</h1>
+
+    <!-- 1. Import media -->
+    <section>
+      <h2>1. Import Media</h2>
+      <input type="file" id="file-input" accept="video/*,audio/*" multiple>
+      <div id="media-list"></div>
+    </section>
+
+    <!-- 2. Preview with NATIVE controls -->
+    <section>
+      <h2>2. Preview</h2>
+      <video id="preview" controls></video>
+      <div id="time-display">0:00 / 0:00</div>
+    </section>
+
+    <!-- 3. Timeline -->
+    <section>
+      <h2>3. Timeline (drag media here)</h2>
+      <div class="toolbar">
+        <button id="btn-split" disabled>✂️ Split<span class="shortcut">S</span></button>
+        <button id="btn-delete" disabled>🗑️ Delete<span class="shortcut">Del</span></button>
+      </div>
+      <div id="timeline">
+        <div id="ruler"></div>
+        <div class="track" id="video-track" data-type="video">
+          <span class="track-label">Video</span>
+        </div>
+        <div class="track" id="audio-track" data-type="audio">
+          <span class="track-label">Audio</span>
+        </div>
+        <div id="playhead" style="left: 10px;"></div>
+      </div>
+    </section>
+
+    <!-- 4. Project -->
+    <section>
+      <h2>4. Project</h2>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button id="btn-save">💾 Save Project</button>
+        <button id="btn-load">📂 Load Project</button>
+        <button id="btn-export" onclick="alert('Export coming soon!')">🎬 Export Video</button>
+      </div>
+      <div id="save-status" style="margin-top: 10px; font-size: 12px; color: #888;"></div>
+    </section>
+  </div>
+
+  <script>
+    // State
+    const media = [];
+    const clips = [];
+    let currentTime = 0;
+    let duration = 30;
+    let selectedClipId = null;
+    const PX_PER_SEC = 20;
+
+    // Elements
+    const fileInput = document.getElementById('file-input');
+    const mediaList = document.getElementById('media-list');
+    const preview = document.getElementById('preview');
+    const timeDisplay = document.getElementById('time-display');
+    const timeline = document.getElementById('timeline');
+    const playhead = document.getElementById('playhead');
+    const ruler = document.getElementById('ruler');
+    const videoTrack = document.getElementById('video-track');
+    const audioTrack = document.getElementById('audio-track');
+    const btnSplit = document.getElementById('btn-split');
+    const btnDelete = document.getElementById('btn-delete');
+
+    // Format time
+    const fmt = (s) => {
+      const m = Math.floor(s / 60);
+      const sec = Math.floor(s % 60);
+      return `${m}:${sec.toString().padStart(2, '0')}`;
+    };
+
+    // Render ruler
+    function renderRuler() {
+      ruler.innerHTML = '';
+      for (let t = 0; t <= duration; t += 5) {
+        const mark = document.createElement('div');
+        mark.className = 'ruler-mark';
+        mark.style.left = `${t * PX_PER_SEC}px`;
+        mark.textContent = fmt(t);
+        ruler.appendChild(mark);
+      }
+    }
+    renderRuler();
+
+    // 1. File input handler
+    fileInput.addEventListener('change', async (e) => {
+      for (const file of e.target.files) {
+        const url = URL.createObjectURL(file);
+        const type = file.type.startsWith('video') ? 'video' : 'audio';
+
+        // Get duration
+        const el = document.createElement(type);
+        el.src = url;
+        await new Promise(r => el.onloadedmetadata = r);
+
+        const item = {
+          id: Math.random().toString(36).slice(2),
+          name: file.name,
+          type,
+          url,
+          duration: el.duration
+        };
+        media.push(item);
+        renderMediaList();
+      }
+    });
+
+    // Render media list
+    function renderMediaList() {
+      mediaList.innerHTML = media.map(m => `
+        <div class="media-item" draggable="true" data-id="${m.id}">
+          ${m.type === 'video' ? '🎬' : '🎵'} ${m.name} (${fmt(m.duration)})
+        </div>
+      `).join('');
+
+      // Add drag handlers
+      mediaList.querySelectorAll('.media-item').forEach(el => {
+        el.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', el.dataset.id);
+        });
+      });
+    }
+
+    // 2. Track drop handlers
+    [videoTrack, audioTrack].forEach(track => {
+      track.addEventListener('dragover', (e) => e.preventDefault());
+      track.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const mediaId = e.dataTransfer.getData('text/plain');
+        const mediaItem = media.find(m => m.id === mediaId);
+        if (!mediaItem) return;
+
+        const rect = track.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const startTime = x / PX_PER_SEC;
+
+        // Create clip
+        const clip = {
+          id: Math.random().toString(36).slice(2),
+          mediaId,
+          type: mediaItem.type,
+          startTime,
+          duration: mediaItem.duration,
+          track: track.dataset.type
+        };
+        clips.push(clip);
+        renderTimeline();
+
+        // Load into preview
+        preview.src = mediaItem.url;
+        const newDuration = Math.max(duration, startTime + mediaItem.duration + 5);
+        if (newDuration > duration) {
+          duration = newDuration;
+          renderRuler();
+        }
+      });
+    });
+
+    // Update toolbar buttons
+    function updateToolbar() {
+      const hasSelection = selectedClipId !== null;
+      btnDelete.disabled = !hasSelection;
+
+      // Split enabled if playhead is over a clip
+      const clipAtPlayhead = clips.find(c =>
+        currentTime > c.startTime && currentTime < c.startTime + c.duration
+      );
+      btnSplit.disabled = !clipAtPlayhead;
+    }
+
+    // Select a clip
+    function selectClip(clipId) {
+      selectedClipId = clipId;
+      renderTimeline();
+      updateToolbar();
+    }
+
+    // Delete selected clip
+    function deleteSelectedClip() {
+      if (!selectedClipId) return;
+      const idx = clips.findIndex(c => c.id === selectedClipId);
+      if (idx !== -1) {
+        clips.splice(idx, 1);
+        selectedClipId = null;
+        renderTimeline();
+        updateToolbar();
+      }
+    }
+
+    // Split clip at playhead
+    function splitAtPlayhead() {
+      const clip = clips.find(c =>
+        currentTime > c.startTime && currentTime < c.startTime + c.duration
+      );
+      if (!clip) return;
+
+      const splitPoint = currentTime - clip.startTime;
+      const originalDuration = clip.duration;
+
+      // Shorten original clip
+      clip.duration = splitPoint;
+
+      // Create new clip for the right part
+      const newClip = {
+        id: Math.random().toString(36).slice(2),
+        mediaId: clip.mediaId,
+        type: clip.type,
+        startTime: currentTime,
+        duration: originalDuration - splitPoint,
+        track: clip.track,
+        trimStart: (clip.trimStart || 0) + splitPoint
+      };
+      clips.push(newClip);
+
+      renderTimeline();
+      updateToolbar();
+    }
+
+    // Render timeline
+    function renderTimeline() {
+      // Clear existing clips
+      document.querySelectorAll('.clip').forEach(el => el.remove());
+
+      clips.forEach(clip => {
+        const mediaItem = media.find(m => m.id === clip.mediaId);
+        const trackEl = clip.track === 'video' ? videoTrack : audioTrack;
+
+        const div = document.createElement('div');
+        div.className = `clip ${clip.track}${clip.id === selectedClipId ? ' selected' : ''}`;
+        div.textContent = mediaItem.name;
+        div.style.left = `${clip.startTime * PX_PER_SEC}px`;
+        div.style.width = `${clip.duration * PX_PER_SEC}px`;
+        div.dataset.id = clip.id;
+
+        // Click to select
+        div.addEventListener('click', (e) => {
+          e.stopPropagation();
+          selectClip(clip.id);
+        });
+
+        // Draggable within timeline
+        div.addEventListener('mousedown', (e) => {
+          if (e.button !== 0) return; // Left click only
+          const startX = e.clientX;
+          const startLeft = clip.startTime * PX_PER_SEC;
+          let moved = false;
+
+          const onMove = (ev) => {
+            moved = true;
+            const dx = ev.clientX - startX;
+            clip.startTime = Math.max(0, (startLeft + dx) / PX_PER_SEC);
+            div.style.left = `${clip.startTime * PX_PER_SEC}px`;
+          };
+
+          const onUp = () => {
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+          };
+
+          document.addEventListener('mousemove', onMove);
+          document.addEventListener('mouseup', onUp);
+        });
+
+        trackEl.appendChild(div);
+      });
+    }
+
+    // Button handlers
+    btnSplit.addEventListener('click', splitAtPlayhead);
+    btnDelete.addEventListener('click', deleteSelectedClip);
+
+    // 3. Video time updates - sync playhead with video
+    preview.addEventListener('timeupdate', () => {
+      // Find which clip is playing based on video src
+      const activeClip = clips.find(c => {
+        const m = media.find(x => x.id === c.mediaId);
+        return m && preview.src.includes(m.url.split('/').pop());
+      });
+
+      if (activeClip) {
+        currentTime = activeClip.startTime + preview.currentTime;
+      } else {
+        currentTime = preview.currentTime;
+      }
+
+      timeDisplay.textContent = `${fmt(currentTime)} / ${fmt(duration)}`;
+      playhead.style.left = `${10 + currentTime * PX_PER_SEC}px`; // 10px for padding
+      updateToolbar();
+    });
+
+    // 4. Click timeline/ruler to seek
+    timeline.addEventListener('click', (e) => {
+      if (e.target.classList.contains('clip')) return;
+      const rect = timeline.getBoundingClientRect();
+      const x = e.clientX - rect.left - 10; // 10px padding
+      const time = Math.max(0, x / PX_PER_SEC);
+
+      // Find clip at this time
+      const clip = clips.find(c =>
+        c.type === 'video' &&
+        time >= c.startTime &&
+        time < c.startTime + c.duration
+      );
+
+      if (clip) {
+        const mediaItem = media.find(m => m.id === clip.mediaId);
+        if (preview.src !== mediaItem.url) {
+          preview.src = mediaItem.url;
+        }
+        preview.currentTime = time - clip.startTime;
+      }
+
+      currentTime = time;
+      playhead.style.left = `${10 + time * PX_PER_SEC}px`;
+      updateToolbar();
+
+      // Click on empty area deselects
+      if (e.target === timeline || e.target.classList.contains('track')) {
+        selectClip(null);
+      }
+    });
+
+    // ==================== SAVE / LOAD ====================
+
+    const DB_NAME = 'litecut';
+    const DB_VERSION = 1;
+
+    // Open IndexedDB
+    function openDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => resolve(request.result);
+        request.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains('projects')) {
+            db.createObjectStore('projects', { keyPath: 'id' });
+          }
+          if (!db.objectStoreNames.contains('media')) {
+            db.createObjectStore('media', { keyPath: 'id' });
+          }
+        };
+      });
+    }
+
+    // Generate project JSON (OTIO-inspired)
+    function serializeProject() {
+      return {
+        otio_compat: 'litecut/1.0',
+        id: 'project-1',
+        name: 'Untitled Project',
+        created: new Date().toISOString(),
+        modified: new Date().toISOString(),
+        rate: 30,
+
+        media_pool: media.map(m => ({
+          id: m.id,
+          name: m.name,
+          media_type: m.type,
+          duration: m.duration,
+          target_url: `local://${m.id}` // Local reference
+        })),
+
+        tracks: [
+          {
+            id: 'track-video',
+            name: 'Video',
+            kind: 'video',
+            items: clips.filter(c => c.track === 'video').map(c => ({
+              type: 'clip',
+              id: c.id,
+              media_ref: c.mediaId,
+              timeline_range: { start: c.startTime, duration: c.duration },
+              source_range: { start: c.trimStart || 0, duration: c.duration }
+            }))
+          },
+          {
+            id: 'track-audio',
+            name: 'Audio',
+            kind: 'audio',
+            items: clips.filter(c => c.track === 'audio').map(c => ({
+              type: 'clip',
+              id: c.id,
+              media_ref: c.mediaId,
+              timeline_range: { start: c.startTime, duration: c.duration },
+              source_range: { start: c.trimStart || 0, duration: c.duration }
+            }))
+          }
+        ]
+      };
+    }
+
+    // Save project to IndexedDB
+    async function saveProject() {
+      const status = document.getElementById('save-status');
+      try {
+        status.textContent = 'Saving...';
+        const db = await openDB();
+
+        // Save media files (blobs)
+        const mediaTx = db.transaction('media', 'readwrite');
+        const mediaStore = mediaTx.objectStore('media');
+        for (const m of media) {
+          await new Promise((resolve, reject) => {
+            const req = mediaStore.put({ id: m.id, name: m.name, type: m.type, file: m.file });
+            req.onsuccess = resolve;
+            req.onerror = reject;
+          });
+        }
+
+        // Save project JSON
+        const project = serializeProject();
+        const projTx = db.transaction('projects', 'readwrite');
+        const projStore = projTx.objectStore('projects');
+        await new Promise((resolve, reject) => {
+          const req = projStore.put(project);
+          req.onsuccess = resolve;
+          req.onerror = reject;
+        });
+
+        status.textContent = `✓ Saved at ${new Date().toLocaleTimeString()}`;
+        console.log('Saved project:', project);
+      } catch (err) {
+        status.textContent = `✗ Error: ${err.message}`;
+        console.error('Save error:', err);
+      }
+    }
+
+    // Load project from IndexedDB
+    async function loadProject() {
+      const status = document.getElementById('save-status');
+      try {
+        status.textContent = 'Loading...';
+        const db = await openDB();
+
+        // Load project JSON
+        const projTx = db.transaction('projects', 'readonly');
+        const projStore = projTx.objectStore('projects');
+        const project = await new Promise((resolve, reject) => {
+          const req = projStore.get('project-1');
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = reject;
+        });
+
+        if (!project) {
+          status.textContent = 'No saved project found';
+          return;
+        }
+
+        // Clear current state
+        media.length = 0;
+        clips.length = 0;
+
+        // Load media files
+        const mediaTx = db.transaction('media', 'readonly');
+        const mediaStore = mediaTx.objectStore('media');
+
+        for (const m of project.media_pool) {
+          const localId = m.target_url.replace('local://', '');
+          const stored = await new Promise((resolve, reject) => {
+            const req = mediaStore.get(localId);
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = reject;
+          });
+
+          if (stored && stored.file) {
+            const url = URL.createObjectURL(stored.file);
+            media.push({
+              id: stored.id,
+              name: stored.name,
+              type: stored.type,
+              file: stored.file,
+              url: url,
+              duration: m.duration
+            });
+          }
+        }
+
+        // Load clips from tracks
+        for (const track of project.tracks) {
+          for (const item of track.items) {
+            if (item.type === 'clip') {
+              clips.push({
+                id: item.id,
+                mediaId: item.media_ref,
+                type: track.kind,
+                track: track.kind,
+                startTime: item.timeline_range.start,
+                duration: item.timeline_range.duration,
+                trimStart: item.source_range.start
+              });
+            }
+          }
+        }
+
+        // Update duration
+        const maxEnd = clips.reduce((max, c) => Math.max(max, c.startTime + c.duration), 30);
+        duration = maxEnd + 5;
+
+        // Re-render everything
+        renderMediaList();
+        renderTimeline();
+        renderRuler();
+        updateToolbar();
+
+        // Load first video into preview
+        const firstVideo = media.find(m => m.type === 'video');
+        if (firstVideo) {
+          preview.src = firstVideo.url;
+        }
+
+        status.textContent = `✓ Loaded project`;
+        console.log('Loaded project:', project);
+      } catch (err) {
+        status.textContent = `✗ Error: ${err.message}`;
+        console.error('Load error:', err);
+      }
+    }
+
+    // Wire up buttons
+    document.getElementById('btn-save').addEventListener('click', saveProject);
+    document.getElementById('btn-load').addEventListener('click', loadProject);
+
+    // ==================== QUERY STRING ====================
+
+    // Load track from URL: ?track=https://example.com/video.mp4
+    async function loadFromQueryString() {
+      const params = new URLSearchParams(window.location.search);
+      const trackUrl = params.get('track');
+
+      if (!trackUrl) return;
+
+      const status = document.getElementById('save-status');
+      status.textContent = 'Loading from URL...';
+
+      try {
+        // Determine type from extension
+        const ext = trackUrl.split('.').pop().toLowerCase().split('?')[0];
+        const type = ['mp4', 'webm', 'mov', 'avi', 'mkv'].includes(ext) ? 'video' :
+                     ['mp3', 'wav', 'ogg', 'm4a', 'flac'].includes(ext) ? 'audio' : 'video';
+
+        // Get filename from URL
+        const name = decodeURIComponent(trackUrl.split('/').pop().split('?')[0]) || 'media';
+
+        // Create a video/audio element to get duration
+        const el = document.createElement(type);
+        el.crossOrigin = 'anonymous';
+        el.src = trackUrl;
+
+        await new Promise((resolve, reject) => {
+          el.onloadedmetadata = resolve;
+          el.onerror = () => reject(new Error('Failed to load media'));
+          setTimeout(() => reject(new Error('Timeout loading media')), 15000);
+        });
+
+        // Add to media pool
+        const item = {
+          id: Math.random().toString(36).slice(2),
+          name: name,
+          type: type,
+          url: trackUrl,
+          duration: el.duration,
+          isRemote: true
+        };
+        media.push(item);
+
+        // Add clip to video track at start
+        const clip = {
+          id: Math.random().toString(36).slice(2),
+          mediaId: item.id,
+          type: type,
+          track: type,
+          startTime: 0,
+          duration: el.duration,
+          trimStart: 0
+        };
+        clips.push(clip);
+
+        // Update duration
+        duration = Math.max(duration, el.duration + 5);
+
+        // Render
+        renderMediaList();
+        renderTimeline();
+        renderRuler();
+
+        // Load into preview
+        preview.src = trackUrl;
+
+        status.textContent = `✓ Loaded: ${name}`;
+      } catch (err) {
+        status.textContent = `✗ Error loading URL: ${err.message}`;
+        console.error('Failed to load track:', err);
+      }
+    }
+
+    // Load on startup
+    loadFromQueryString();
+
+    // ==================== KEYBOARD ====================
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT') return;
+
+      // Ctrl+S to save
+      if (e.ctrlKey || e.metaKey) {
+        if (e.code === 'KeyS') {
+          e.preventDefault();
+          saveProject();
+          return;
+        }
+      }
+
+      switch (e.code) {
+        case 'Space':
+          e.preventDefault();
+          if (preview.paused) preview.play();
+          else preview.pause();
+          break;
+        case 'KeyS':
+          e.preventDefault();
+          splitAtPlayhead();
+          break;
+        case 'Delete':
+        case 'Backspace':
+          e.preventDefault();
+          deleteSelectedClip();
+          break;
+        case 'Escape':
+          selectClip(null);
+          break;
+      }
+    });
+  </script>
+</body>
+</html>

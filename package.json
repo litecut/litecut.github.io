@@ -1,0 +1,33 @@
+{
+  "name": "litecut",
+  "version": "0.0.1",
+  "description": "Lightweight browser-based video editor with OTIO-inspired format and Solid Pod support",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx serve ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/litecut/litecut.git"
+  },
+  "keywords": [
+    "video-editor",
+    "browser",
+    "timeline",
+    "solid",
+    "solid-pod",
+    "opentimelineio",
+    "otio",
+    "webm",
+    "mp4",
+    "editing",
+    "nle"
+  ],
+  "author": "LiteCut Contributors",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/litecut/litecut/issues"
+  },
+  "homepage": "https://litecut.org"
+}
