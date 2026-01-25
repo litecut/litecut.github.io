@@ -15,12 +15,22 @@
       <h2>1. Import Media</h2>
       <input type="file" id="file-input" accept="video/*,audio/*" multiple>
       <div id="media-list"></div>
+      <div id="media-empty" class="empty-state">
+        <div class="empty-state-icon">📁</div>
+        <div class="empty-state-text">Import video or audio files to get started</div>
+      </div>
     </section>
 
     <!-- 2. Preview with NATIVE controls -->
     <section>
       <h2>2. Preview</h2>
-      <video id="preview" controls></video>
+      <div id="preview-container">
+        <video id="preview" controls></video>
+        <div id="preview-empty" class="empty-state preview-empty">
+          <div class="empty-state-icon">🎬</div>
+          <div class="empty-state-text">Import media to preview</div>
+        </div>
+      </div>
       <div id="time-display">0:00 / 0:00</div>
     </section>
 
@@ -35,9 +45,11 @@
         <div id="ruler"></div>
         <div class="track" id="video-track" data-type="video">
           <span class="track-label">Video</span>
+          <span class="track-hint" id="video-hint">← Drag video clips here</span>
         </div>
         <div class="track" id="audio-track" data-type="audio">
           <span class="track-label">Audio</span>
+          <span class="track-hint" id="audio-hint">← Drag audio clips here</span>
         </div>
         <div id="playhead" style="left: 10px;"></div>
       </div>

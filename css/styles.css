@@ -227,3 +227,74 @@ button:active {
   background: linear-gradient(135deg, #252525 0%, #2a2a2a 100%);
 }
 .media-item:active { cursor: grabbing; }
+
+/* Empty states */
+.empty-state {
+  border: 2px dashed #333;
+  border-radius: 8px;
+  padding: 30px 20px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.empty-state-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+  opacity: 0.7;
+}
+
+.empty-state-text {
+  font-size: 13px;
+  color: #666;
+}
+
+.empty-state.hidden {
+  display: none;
+}
+
+/* Preview empty state */
+#preview-container {
+  position: relative;
+  max-width: 800px;
+}
+
+.preview-empty {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  border: none;
+  margin: 0;
+  min-height: 200px;
+}
+
+#preview:not([src=""]):not([src]) ~ .preview-empty {
+  display: none;
+}
+
+#preview[src=""] ~ .preview-empty,
+#preview:not([src]) ~ .preview-empty {
+  display: flex;
+}
+
+/* Track hints */
+.track-hint {
+  position: absolute;
+  left: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #555;
+  font-style: italic;
+  pointer-events: none;
+}
+
+.track-hint.hidden {
+  display: none;
+}
