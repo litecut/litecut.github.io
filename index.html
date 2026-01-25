@@ -347,17 +347,18 @@
 
     // Render media list
     function renderMediaList() {
-      mediaList.innerHTML = media.map(m => `
-        <div class="media-item" draggable="true" data-id="${m.id}">
-          ${m.type === 'video' ? '🎬' : '🎵'} ${m.name} (${fmt(m.duration)})
-        </div>
-      `).join('');
-
-      // Add drag handlers
-      mediaList.querySelectorAll('.media-item').forEach(el => {
-        el.addEventListener('dragstart', (e) => {
-          e.dataTransfer.setData('text/plain', el.dataset.id);
+      mediaList.innerHTML = '';
+      media.forEach(m => {
+        const div = document.createElement('div');
+        div.className = 'media-item';
+        div.draggable = true;
+        div.dataset.id = m.id;
+        // Use textContent to prevent XSS from malicious filenames
+        div.textContent = `${m.type === 'video' ? '🎬' : '🎵'} ${m.name} (${fmt(m.duration)})`;
+        div.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', m.id);
         });
+        mediaList.appendChild(div);
       });
     }
 
