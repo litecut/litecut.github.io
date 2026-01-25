@@ -237,12 +237,6 @@ button:active {
   margin-top: 10px;
 }
 
-.empty-state-icon {
-  font-size: 32px;
-  margin-bottom: 8px;
-  opacity: 0.7;
-}
-
 .empty-state-text {
   font-size: 13px;
   color: #666;
@@ -274,13 +268,8 @@ button:active {
   min-height: 200px;
 }
 
-#preview:not([src=""]):not([src]) ~ .preview-empty {
+.preview-empty.hidden {
   display: none;
-}
-
-#preview[src=""] ~ .preview-empty,
-#preview:not([src]) ~ .preview-empty {
-  display: flex;
 }
 
 /* Track hints */
@@ -305,10 +294,6 @@ button:active {
   align-items: center;
   gap: 8px;
   margin-bottom: 12px;
-}
-
-.project-name-label {
-  font-size: 16px;
 }
 
 .project-name {

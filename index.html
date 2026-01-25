@@ -8,7 +8,7 @@
 </head>
 <body>
   <div id="app">
-    <h1>✂️ LiteCut</h1>
+    <h1>LiteCut</h1>
 
     <!-- 1. Import media -->
     <section>
@@ -16,7 +16,6 @@
       <input type="file" id="file-input" accept="video/*,audio/*" multiple>
       <div id="media-list"></div>
       <div id="media-empty" class="empty-state">
-        <div class="empty-state-icon">📁</div>
         <div class="empty-state-text">Import video or audio files to get started</div>
       </div>
     </section>
@@ -27,7 +26,6 @@
       <div id="preview-container">
         <video id="preview" controls></video>
         <div id="preview-empty" class="empty-state preview-empty">
-          <div class="empty-state-icon">🎬</div>
           <div class="empty-state-text">Import media to preview</div>
         </div>
       </div>
@@ -38,8 +36,8 @@
     <section>
       <h2>3. Timeline (drag media here)</h2>
       <div class="toolbar">
-        <button id="btn-split" disabled>✂️ Split<span class="shortcut">S</span></button>
-        <button id="btn-delete" disabled>🗑️ Delete<span class="shortcut">Del</span></button>
+        <button id="btn-split" disabled>Split<span class="shortcut">S</span></button>
+        <button id="btn-delete" disabled>Delete<span class="shortcut">Del</span></button>
       </div>
       <div id="timeline">
         <div id="ruler"></div>
@@ -59,18 +57,17 @@
     <section>
       <h2>4. Project</h2>
       <div class="project-header">
-        <span class="project-name-label">📝</span>
         <span id="project-name" class="project-name">Untitled Project</span>
         <button id="btn-rename" class="btn-small">Rename</button>
       </div>
       <div class="project-actions">
-        <button id="btn-new">➕ New</button>
-        <button id="btn-save">💾 Save</button>
+        <button id="btn-new">+ New</button>
+        <button id="btn-save">Save</button>
         <div class="dropdown">
-          <button id="btn-load">📂 Open</button>
+          <button id="btn-load">Open</button>
           <div id="project-list" class="dropdown-content"></div>
         </div>
-        <button id="btn-export" onclick="alert('Export coming soon!')">🎬 Export</button>
+        <button id="btn-export" onclick="alert('Export coming soon!')">Export</button>
       </div>
       <div id="save-status" style="margin-top: 10px; font-size: 12px; color: #888;"></div>
     </section>
