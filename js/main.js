@@ -106,11 +106,15 @@ function playVideoClip(index, useCanvasMask = false) {
   updatePreviewEmpty();
 }
 
-// Hide canvas when video starts playing
+// Hide canvas when video starts playing (wait for frame to paint)
 video.addEventListener('playing', () => {
   if (isTransitioning) {
-    hideCanvas();
-    isTransitioning = false;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        hideCanvas();
+        isTransitioning = false;
+      });
+    });
   }
 });
 
