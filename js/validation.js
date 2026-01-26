@@ -195,8 +195,8 @@ export function detectAndValidateProject(project) {
     return { ...result, version: '0.0.1' };
   }
 
-  // Check for litecut/0.0.2 URL format
-  if (project.version === 'litecut/0.0.2') {
+  // Check for litecut/0.0.1 or litecut/0.0.2 URL format (same structure)
+  if (project.version === 'litecut/0.0.1' || project.version === 'litecut/0.0.2') {
     // Could be URL format (tracks as object) or storage format (tracks as array)
     if (Array.isArray(project.tracks)) {
       const result = validateProject(project);
