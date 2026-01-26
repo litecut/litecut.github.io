@@ -1,15 +1,29 @@
 // Timeline rendering and clip management
-import { state, PX_PER_SEC } from './state.js';
+import { state, getPxPerSec } from './state.js';
 import { fmt, generateId } from './utils.js';
 import { getMediaById } from './media.js';
+
+// Get timeline container width for scaling
+function getTimelineWidth() {
+  const timeline = document.getElementById('timeline');
+  return timeline ? timeline.clientWidth - 20 : 800; // fallback
+}
 
 // Render ruler with time markers
 export function renderRuler(rulerEl) {
   rulerEl.innerHTML = '';
-  for (let t = 0; t <= state.duration; t += 5) {
+  const pxPerSec = getPxPerSec(getTimelineWidth());
+
+  // Calculate appropriate interval based on scale
+  let interval = 5;
+  if (pxPerSec < 5) interval = 30;
+  else if (pxPerSec < 10) interval = 15;
+  else if (pxPerSec < 20) interval = 10;
+
+  for (let t = 0; t <= state.duration; t += interval) {
     const mark = document.createElement('div');
     mark.className = 'ruler-mark';
-    mark.style.left = `${t * PX_PER_SEC}px`;
+    mark.style.left = `${t * pxPerSec}px`;
     mark.textContent = fmt(t);
     rulerEl.appendChild(mark);
   }
@@ -20,6 +34,8 @@ export function renderTimeline(videoTrack, audioTrack, onSelect) {
   // Clear existing clips
   document.querySelectorAll('.clip').forEach(el => el.remove());
 
+  const pxPerSec = getPxPerSec(getTimelineWidth());
+
   state.clips.forEach(clip => {
     const mediaItem = getMediaById(clip.mediaId);
     if (!mediaItem) return;
@@ -29,8 +45,8 @@ export function renderTimeline(videoTrack, audioTrack, onSelect) {
     const div = document.createElement('div');
     div.className = `clip ${clip.track}${clip.id === state.selectedClipId ? ' selected' : ''}`;
     div.textContent = mediaItem.name;
-    div.style.left = `${clip.startTime * PX_PER_SEC}px`;
-    div.style.width = `${clip.duration * PX_PER_SEC}px`;
+    div.style.left = `${clip.startTime * pxPerSec}px`;
+    div.style.width = `${clip.duration * pxPerSec}px`;
     div.dataset.id = clip.id;
 
     // Click to select
@@ -42,13 +58,14 @@ export function renderTimeline(videoTrack, audioTrack, onSelect) {
     // Draggable within timeline
     div.addEventListener('mousedown', (e) => {
       if (e.button !== 0) return;
+      const pxPerSecDrag = getPxPerSec(getTimelineWidth());
       const startX = e.clientX;
-      const startLeft = clip.startTime * PX_PER_SEC;
+      const startLeft = clip.startTime * pxPerSecDrag;
 
       const onMove = (ev) => {
         const dx = ev.clientX - startX;
-        clip.startTime = Math.max(0, (startLeft + dx) / PX_PER_SEC);
-        div.style.left = `${clip.startTime * PX_PER_SEC}px`;
+        clip.startTime = Math.max(0, (startLeft + dx) / pxPerSecDrag);
+        div.style.left = `${clip.startTime * pxPerSecDrag}px`;
       };
 
       const onUp = () => {

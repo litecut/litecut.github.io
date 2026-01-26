@@ -20,6 +20,13 @@ export function resetState() {
   state.projectName = 'Untitled Project';
 }
 
+// Calculate pixels per second based on container width
+export function getPxPerSec(containerWidth) {
+  const padding = 20; // Some padding on right side
+  return (containerWidth - padding) / state.duration;
+}
+
+// Default for when container not available
 export const PX_PER_SEC = 20;
 
 export function selectClip(clipId, renderTimeline, updateToolbar) {

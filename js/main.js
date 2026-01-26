@@ -1,5 +1,11 @@
 // Main entry point - initializes the application
-import { state, PX_PER_SEC, selectClip, resetState } from './state.js';
+import { state, getPxPerSec, selectClip, resetState } from './state.js';
+
+// Get current scale based on timeline width
+function getScale() {
+  const timeline = document.getElementById('timeline');
+  return timeline ? getPxPerSec(timeline.clientWidth - 20) : 20;
+}
 import { fmt } from './utils.js';
 import { addMediaFromFile, addMediaFromUrl, renderMediaList, getMediaById } from './media.js';
 import { renderRuler, renderTimeline, addClip, deleteSelectedClip, splitAtPlayhead, getClipAtTime, getNextClip, canSplit } from './timeline.js';
@@ -149,7 +155,7 @@ video.addEventListener('timeupdate', () => {
     state.currentTime = video.currentTime;
   }
   timeDisplay.textContent = `${fmt(state.currentTime)} / ${fmt(state.duration)}`;
-  playhead.style.left = `${10 + state.currentTime * PX_PER_SEC}px`;
+  playhead.style.left = `${10 + state.currentTime * getScale()}px`;
   updateToolbar();
 });
 
@@ -312,7 +318,7 @@ fileInput.addEventListener('change', async (e) => {
 
     const rect = track.getBoundingClientRect();
     const x = e.clientX - rect.left;
-    const startTime = x / PX_PER_SEC;
+    const startTime = x / getScale();
 
     const newClip = addClip(mediaId, track.dataset.type, startTime);
     if (newClip) {
@@ -348,7 +354,7 @@ timeline.addEventListener('click', (e) => {
   if (e.target.classList.contains('clip')) return;
   const rect = timeline.getBoundingClientRect();
   const x = e.clientX - rect.left - 10;
-  const time = Math.max(0, x / PX_PER_SEC);
+  const time = Math.max(0, x / getScale());
 
   loadClips();
   const idx = videoClips.findIndex(c => time >= c.startTime && time < c.startTime + c.duration);
@@ -359,7 +365,7 @@ timeline.addEventListener('click', (e) => {
   }
 
   state.currentTime = time;
-  playhead.style.left = `${10 + time * PX_PER_SEC}px`;
+  playhead.style.left = `${10 + time * getScale()}px`;
   updateToolbar();
 
   // Sync audio
