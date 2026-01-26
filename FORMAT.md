@@ -3,33 +3,89 @@
 ## Quick Reference
 
 ```
-0.0.1 (simple):  {version,name,media_pool:[{id,source_url,duration}],tracks:{video:[],audio:[]}}
-0.0.2 (storage): {version,name,media_pool:[{id,target_url,duration}],tracks:[{kind,items:[]}]}
+0.0.1 (legacy):  {version:"0.0.1", tracks:{video:[{source_url,duration}]}}        — sequential, no IDs
+0.0.2 (current): {version:"litecut/0.0.2", media_pool:[], tracks:{video:[{id,media_id,start_time}]}}
 ```
 
-| Field | 0.0.1 | 0.0.2 |
-|-------|-------|-------|
-| version | `"litecut/0.0.1"` | `"litecut/0.0.2"` |
-| tracks | `{video:[], audio:[]}` | `[{kind:"video", items:[]}]` |
-| media url | `source_url` | `target_url` |
-| clip position | `start_time` | `timeline_range.start` |
-| clip reference | `media_id` | `media_ref` |
-
-**When to use:**
-- 0.0.1: Sharing projects via URL, human editing
-- 0.0.2: IndexedDB storage, OTIO compatibility
+| Field | 0.0.1 (legacy) | 0.0.2 (current) |
+|-------|----------------|-----------------|
+| version | `"0.0.1"` | `"litecut/0.0.2"` |
+| media_pool | none (inline) | separate array |
+| clip IDs | none | required |
+| positioning | sequential | explicit `start_time` |
+| trimming | none | `trim_start` |
+| codec metadata | yes | no |
 
 ---
 
-## litecut/0.0.1 (Simple Format)
+## 0.0.1 (Legacy Format)
 
-Minimal format for sharing and URL loading.
+Original format from ffmpeg-based tooling. Clips are sequential (no timeline positioning).
 
 ### Example
 
 ```json
 {
-  "version": "litecut/0.0.1",
+  "version": "0.0.1",
+  "created": "2025-09-15T17:38:02.995Z",
+  "name": "Compiled Media Timeline",
+  "tracks": {
+    "video": [
+      {
+        "name": "input1.mp4",
+        "source_url": "input1.mp4",
+        "duration": 10.17,
+        "width": 1370,
+        "height": 768,
+        "codec_name": "h264",
+        "frame_rate": null
+      },
+      {
+        "name": "input2.mp4",
+        "source_url": "input2.mp4",
+        "duration": 10.17,
+        "width": 1370,
+        "height": 768,
+        "codec_name": "h264",
+        "frame_rate": null
+      }
+    ],
+    "audio": [
+      {
+        "name": "audio1.mp3",
+        "source_url": "audio1.mp3",
+        "duration": 19.96,
+        "codec_name": "mp3",
+        "sample_rate": "44100",
+        "channels": 2
+      }
+    ]
+  }
+}
+```
+
+### Schema
+
+**Root:** `{version, name, created?, tracks}`
+
+**Tracks:** `{video: Item[], audio: Item[]}`
+
+**Item:** `{name, source_url, duration, ...metadata}`
+- Items are played sequentially (no start_time)
+- Optional: `width`, `height`, `codec_name`, `frame_rate`, `sample_rate`, `channels`
+- Optional: `start_time` (if present, overrides sequential positioning)
+
+---
+
+## 0.0.2 (Current Format)
+
+LiteCut native format with media pool, clip IDs, and timeline positioning.
+
+### Example
+
+```json
+{
+  "version": "litecut/0.0.2",
   "name": "My Project",
   "created": "2025-01-25T12:00:00.000Z",
   "modified": "2025-01-25T12:00:00.000Z",
@@ -37,17 +93,17 @@ Minimal format for sharing and URL loading.
   "media_pool": [
     {
       "id": "media-1",
-      "name": "video.mp4",
+      "name": "input1.mp4",
       "type": "video",
-      "source_url": "https://example.com/video.mp4",
-      "duration": 10.5
+      "source_url": "input1.mp4",
+      "duration": 10.17
     },
     {
       "id": "media-2",
-      "name": "audio.mp3",
+      "name": "audio1.mp3",
       "type": "audio",
-      "source_url": "audio.mp3",
-      "duration": 30.0
+      "source_url": "audio1.mp3",
+      "duration": 19.96
     }
   ],
 
@@ -57,7 +113,7 @@ Minimal format for sharing and URL loading.
         "id": "clip-1",
         "media_id": "media-1",
         "start_time": 0,
-        "duration": 10.5,
+        "duration": 10.17,
         "trim_start": 0
       }
     ],
@@ -66,7 +122,7 @@ Minimal format for sharing and URL loading.
         "id": "clip-2",
         "media_id": "media-2",
         "start_time": 0,
-        "duration": 30.0,
+        "duration": 19.96,
         "trim_start": 0
       }
     ]
@@ -85,162 +141,71 @@ Minimal format for sharing and URL loading.
 **Tracks:** `{video: Clip[], audio: Clip[]}`
 
 **Clip:** `{id, media_id, start_time, duration, trim_start?}`
+- `media_id`: references media_pool item
 - `start_time`: position on timeline (seconds)
 - `trim_start`: in-point offset in source media (default: 0)
 
 ---
 
-## litecut/0.0.2 (Storage Format)
-
-OTIO-inspired format for IndexedDB persistence.
-
-### Example
-
-```json
-{
-  "version": "litecut/0.0.2",
-  "id": "project-1706184000000-abc123",
-  "name": "My Project",
-  "created": "2025-01-25T12:00:00.000Z",
-  "modified": "2025-01-25T12:00:00.000Z",
-  "rate": 30,
-
-  "media_pool": [
-    {
-      "id": "media-1",
-      "name": "video.mp4",
-      "media_type": "video",
-      "duration": 10.5,
-      "target_url": "local://media-1"
-    }
-  ],
-
-  "tracks": [
-    {
-      "id": "track-video",
-      "name": "Video",
-      "kind": "video",
-      "items": [
-        {
-          "type": "clip",
-          "id": "clip-1",
-          "media_ref": "media-1",
-          "timeline_range": {"start": 0, "duration": 10.5},
-          "source_range": {"start": 0, "duration": 10.5}
-        }
-      ]
-    },
-    {
-      "id": "track-audio",
-      "name": "Audio",
-      "kind": "audio",
-      "items": []
-    }
-  ]
-}
-```
-
-### Schema
-
-**Root:** `{version, id, name, created?, modified?, rate?, media_pool, tracks}`
-
-**Media item:** `{id, name, media_type, duration, target_url}`
-- `media_type`: `"video"` | `"audio"`
-- `target_url`: `"local://id"` for IndexedDB blobs, or full URL
-
-**Tracks:** `Track[]` (array, not object)
-
-**Track:** `{id, name, kind, items}`
-- `kind`: `"video"` | `"audio"`
-
-**Item:** `{type, id, media_ref, timeline_range, source_range}`
-- `type`: `"clip"` (future: `"gap"`, `"transition"`)
-- `timeline_range`: `{start, duration}` position on timeline
-- `source_range`: `{start, duration}` range within source media
-
----
-
-## Converting Between Formats
-
-### 0.0.1 → 0.0.2
+## Converting 0.0.1 → 0.0.2
 
 ```javascript
 function convertV001toV002(project) {
+  let videoTime = 0;
+  let audioTime = 0;
+  const media = [];
+  const videoClips = [];
+  const audioClips = [];
+
+  // Convert video items
+  project.tracks.video.forEach((item, i) => {
+    const mediaId = `media-v${i}`;
+    media.push({
+      id: mediaId,
+      name: item.name,
+      type: 'video',
+      source_url: item.source_url,
+      duration: item.duration
+    });
+    const startTime = item.start_time ?? videoTime;
+    videoClips.push({
+      id: `clip-v${i}`,
+      media_id: mediaId,
+      start_time: startTime,
+      duration: item.duration,
+      trim_start: 0
+    });
+    videoTime = startTime + item.duration;
+  });
+
+  // Convert audio items
+  project.tracks.audio.forEach((item, i) => {
+    const mediaId = `media-a${i}`;
+    media.push({
+      id: mediaId,
+      name: item.name,
+      type: 'audio',
+      source_url: item.source_url,
+      duration: item.duration
+    });
+    const startTime = item.start_time ?? audioTime;
+    audioClips.push({
+      id: `clip-a${i}`,
+      media_id: mediaId,
+      start_time: startTime,
+      duration: item.duration,
+      trim_start: 0
+    });
+    audioTime = startTime + item.duration;
+  });
+
   return {
     version: 'litecut/0.0.2',
-    id: generateId(),
     name: project.name,
     created: project.created,
-    modified: project.modified,
-    rate: 30,
-    media_pool: project.media_pool.map(m => ({
-      id: m.id,
-      name: m.name,
-      media_type: m.type,
-      duration: m.duration,
-      target_url: m.source_url
-    })),
-    tracks: [
-      {
-        id: 'track-video', name: 'Video', kind: 'video',
-        items: project.tracks.video.map(c => ({
-          type: 'clip',
-          id: c.id,
-          media_ref: c.media_id,
-          timeline_range: {start: c.start_time, duration: c.duration},
-          source_range: {start: c.trim_start || 0, duration: c.duration}
-        }))
-      },
-      {
-        id: 'track-audio', name: 'Audio', kind: 'audio',
-        items: project.tracks.audio.map(c => ({
-          type: 'clip',
-          id: c.id,
-          media_ref: c.media_id,
-          timeline_range: {start: c.start_time, duration: c.duration},
-          source_range: {start: c.trim_start || 0, duration: c.duration}
-        }))
-      }
-    ]
-  };
-}
-```
-
-### 0.0.2 → 0.0.1
-
-```javascript
-function convertV002toV001(project) {
-  const videoTrack = project.tracks.find(t => t.kind === 'video');
-  const audioTrack = project.tracks.find(t => t.kind === 'audio');
-
-  return {
-    version: 'litecut/0.0.1',
-    name: project.name,
-    created: project.created,
-    modified: project.modified,
-    media_pool: project.media_pool.map(m => ({
-      id: m.id,
-      name: m.name,
-      type: m.media_type,
-      source_url: m.target_url.replace('local://', ''),
-      duration: m.duration
-    })),
-    tracks: {
-      video: (videoTrack?.items || []).filter(i => i.type === 'clip').map(c => ({
-        id: c.id,
-        media_id: c.media_ref,
-        start_time: c.timeline_range.start,
-        duration: c.timeline_range.duration,
-        trim_start: c.source_range.start
-      })),
-      audio: (audioTrack?.items || []).filter(i => i.type === 'clip').map(c => ({
-        id: c.id,
-        media_id: c.media_ref,
-        start_time: c.timeline_range.start,
-        duration: c.timeline_range.duration,
-        trim_start: c.source_range.start
-      }))
-    }
+    modified: new Date().toISOString(),
+    media_pool: media,
+    tracks: { video: videoClips, audio: audioClips }
   };
 }
 ```
@@ -253,7 +218,7 @@ function convertV002toV001(project) {
 https://litecut.org/?project=https://example.com/project.json
 ```
 
-- Only 0.0.1 format supported for URL loading
+- Both 0.0.1 and 0.0.2 supported for URL loading
 - JSON and media must have CORS headers
 - Relative `source_url` resolved against JSON location
 
@@ -261,18 +226,43 @@ https://litecut.org/?project=https://example.com/project.json
 
 ## Version History
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 0.0.1 | 2025-01-25 | Initial simple format |
-| 0.0.2 | 2025-01-26 | OTIO-inspired storage format |
+| Version | Date | Description |
+|---------|------|-------------|
+| 0.0.1 | 2025-09 | Legacy format from ffmpeg tooling |
+| 0.0.2 | 2025-01 | LiteCut native with media_pool, IDs, positioning |
 
 ---
 
-## OTIO Comparison
+## Internal Storage Format
 
-| OTIO | litecut | Rationale |
-|------|---------|-----------|
-| RationalTime | float seconds | Browser video uses seconds |
-| OTIO_SCHEMA per object | single version field | Simpler |
-| Stack/Track hierarchy | flat tracks array | Only 2 tracks |
-| .otio extension | .json | Standard tooling |
+For IndexedDB persistence, 0.0.2 is extended with OTIO-inspired structure:
+
+```json
+{
+  "version": "litecut/0.0.2",
+  "id": "project-1706184000000-abc123",
+  "media_pool": [{
+    "id": "media-1",
+    "name": "video.mp4",
+    "media_type": "video",
+    "duration": 10.5,
+    "target_url": "local://media-1"
+  }],
+  "tracks": [{
+    "id": "track-video",
+    "kind": "video",
+    "items": [{
+      "type": "clip",
+      "id": "clip-1",
+      "media_ref": "media-1",
+      "timeline_range": {"start": 0, "duration": 10.5},
+      "source_range": {"start": 0, "duration": 10.5}
+    }]
+  }]
+}
+```
+
+Key differences from URL format:
+- `target_url: "local://id"` for IndexedDB blob references
+- `tracks` is array with `kind` field (not object)
+- Clips use `timeline_range`/`source_range` objects

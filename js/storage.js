@@ -297,7 +297,94 @@ function buildMediaItem(mediaItem, baseUrl) {
   };
 }
 
-// Load project from remote URL (litecut/0.0.1 format)
+// Load legacy 0.0.1 project (no media_pool, sequential clips)
+function loadLegacyProject(project, projectUrl) {
+  let videoTime = 0;
+  let audioTime = 0;
+
+  // Convert video items to media + clips
+  (project.tracks.video || []).forEach((item, i) => {
+    const mediaId = `media-v${i}`;
+    state.media.push({
+      id: mediaId,
+      name: item.name || item.source_url,
+      type: 'video',
+      url: resolveUrl(item.source_url, projectUrl),
+      duration: item.duration,
+      isRemote: true
+    });
+    const startTime = item.start_time ?? videoTime;
+    state.clips.push({
+      id: `clip-v${i}`,
+      mediaId: mediaId,
+      type: 'video',
+      track: 'video',
+      startTime: startTime,
+      duration: item.duration,
+      trimStart: 0
+    });
+    videoTime = startTime + item.duration;
+  });
+
+  // Convert audio items to media + clips
+  (project.tracks.audio || []).forEach((item, i) => {
+    const mediaId = `media-a${i}`;
+    state.media.push({
+      id: mediaId,
+      name: item.name || item.source_url,
+      type: 'audio',
+      url: resolveUrl(item.source_url, projectUrl),
+      duration: item.duration,
+      isRemote: true
+    });
+    const startTime = item.start_time ?? audioTime;
+    state.clips.push({
+      id: `clip-a${i}`,
+      mediaId: mediaId,
+      type: 'audio',
+      track: 'audio',
+      startTime: startTime,
+      duration: item.duration,
+      trimStart: 0
+    });
+    audioTime = startTime + item.duration;
+  });
+}
+
+// Load 0.0.2 project (has media_pool, explicit positioning)
+function loadV002Project(project, projectUrl) {
+  // Build media items
+  for (const m of project.media_pool) {
+    state.media.push(buildMediaItem(m, projectUrl));
+  }
+
+  // Load clips from tracks
+  for (const clip of project.tracks.video) {
+    state.clips.push({
+      id: clip.id,
+      mediaId: clip.media_id,
+      type: 'video',
+      track: 'video',
+      startTime: clip.start_time,
+      duration: clip.duration,
+      trimStart: clip.trim_start || 0
+    });
+  }
+
+  for (const clip of project.tracks.audio) {
+    state.clips.push({
+      id: clip.id,
+      mediaId: clip.media_id,
+      type: 'audio',
+      track: 'audio',
+      startTime: clip.start_time,
+      duration: clip.duration,
+      trimStart: clip.trim_start || 0
+    });
+  }
+}
+
+// Load project from remote URL (supports 0.0.1 and 0.0.2)
 export async function loadProjectFromUrl(projectUrl, statusEl, renderCallbacks) {
   try {
     statusEl.textContent = 'Fetching project...';
@@ -317,10 +404,6 @@ export async function loadProjectFromUrl(projectUrl, statusEl, renderCallbacks) 
       throw new Error(validation.errors[0]);
     }
 
-    if (validation.version !== 'litecut/0.0.1') {
-      throw new Error(`Unsupported format: ${validation.version}`);
-    }
-
     statusEl.textContent = 'Loading project...';
 
     // Clear current state
@@ -328,38 +411,17 @@ export async function loadProjectFromUrl(projectUrl, statusEl, renderCallbacks) 
     state.clips.length = 0;
     state.selectedClipId = null;
 
-    // Set project info (generate new ID for remote projects)
+    // Set project info
     state.projectId = generateId();
-    state.projectName = project.name;
+    state.projectName = project.name || 'Imported Project';
 
-    // Build media items from JSON (no preloading)
-    for (const m of project.media_pool) {
-      state.media.push(buildMediaItem(m, projectUrl));
-    }
-
-    // Load clips from tracks
-    for (const clip of project.tracks.video) {
-      state.clips.push({
-        id: clip.id,
-        mediaId: clip.media_id,
-        type: 'video',
-        track: 'video',
-        startTime: clip.start_time,
-        duration: clip.duration,
-        trimStart: clip.trim_start || 0
-      });
-    }
-
-    for (const clip of project.tracks.audio) {
-      state.clips.push({
-        id: clip.id,
-        mediaId: clip.media_id,
-        type: 'audio',
-        track: 'audio',
-        startTime: clip.start_time,
-        duration: clip.duration,
-        trimStart: clip.trim_start || 0
-      });
+    // Load based on version
+    if (validation.version === '0.0.1') {
+      loadLegacyProject(project, projectUrl);
+    } else if (validation.version === 'litecut/0.0.2') {
+      loadV002Project(project, projectUrl);
+    } else {
+      throw new Error(`Unsupported format: ${validation.version}`);
     }
 
     // Update duration

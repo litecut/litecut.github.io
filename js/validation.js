@@ -67,17 +67,44 @@ export function validateProject(project) {
   return { valid: errors.length === 0, errors };
 }
 
-// Validate litecut/0.0.1 project format
-export function validateProjectV001(project) {
+// Validate legacy 0.0.1 format (no media_pool, sequential clips)
+export function validateLegacyV001(project) {
   const errors = [];
 
   if (!project || typeof project !== 'object') {
     return { valid: false, errors: ['Project must be an object'] };
   }
 
-  // Check version
-  if (project.version !== 'litecut/0.0.1') {
-    errors.push(`Unsupported version: ${project.version} (expected litecut/0.0.1)`);
+  if (!project.tracks || typeof project.tracks !== 'object') {
+    errors.push('Missing or invalid tracks object');
+  } else {
+    if (!Array.isArray(project.tracks.video)) {
+      errors.push('Missing or invalid tracks.video array');
+    } else {
+      project.tracks.video.forEach((item, i) => {
+        if (typeof item.source_url !== 'string') errors.push(`tracks.video[${i}]: missing source_url`);
+        if (typeof item.duration !== 'number') errors.push(`tracks.video[${i}]: missing duration`);
+      });
+    }
+    if (!Array.isArray(project.tracks.audio)) {
+      errors.push('Missing or invalid tracks.audio array');
+    } else {
+      project.tracks.audio.forEach((item, i) => {
+        if (typeof item.source_url !== 'string') errors.push(`tracks.audio[${i}]: missing source_url`);
+        if (typeof item.duration !== 'number') errors.push(`tracks.audio[${i}]: missing duration`);
+      });
+    }
+  }
+
+  return { valid: errors.length === 0, errors };
+}
+
+// Validate litecut/0.0.2 URL format (with media_pool and IDs)
+export function validateProjectV002(project) {
+  const errors = [];
+
+  if (!project || typeof project !== 'object') {
+    return { valid: false, errors: ['Project must be an object'] };
   }
 
   // Check name
@@ -162,17 +189,22 @@ export function detectAndValidateProject(project) {
     return { valid: false, errors: ['Project must be an object'], version: null };
   }
 
-  // Check for litecut/0.0.x format
-  if (project.version && project.version.startsWith('litecut/')) {
-    if (project.version === 'litecut/0.0.1') {
-      const result = validateProjectV001(project);
-      return { ...result, version: 'litecut/0.0.1' };
-    }
-    if (project.version === 'litecut/0.0.2') {
+  // Check for legacy 0.0.1 format (no "litecut/" prefix)
+  if (project.version === '0.0.1') {
+    const result = validateLegacyV001(project);
+    return { ...result, version: '0.0.1' };
+  }
+
+  // Check for litecut/0.0.2 URL format
+  if (project.version === 'litecut/0.0.2') {
+    // Could be URL format (tracks as object) or storage format (tracks as array)
+    if (Array.isArray(project.tracks)) {
       const result = validateProject(project);
       return { ...result, version: 'litecut/0.0.2' };
+    } else {
+      const result = validateProjectV002(project);
+      return { ...result, version: 'litecut/0.0.2' };
     }
-    return { valid: false, errors: [`Unsupported version: ${project.version}`], version: project.version };
   }
 
   // Check for legacy internal format (otio_compat: litecut/1.0)
