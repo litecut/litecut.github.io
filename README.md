@@ -42,14 +42,14 @@ https://litecut.org?track=https://example.com/video.mp4
 
 ## Project Format
 
-LiteCut uses an OTIO-inspired JSON format:
+LiteCut uses two JSON formats (see [FORMAT.md](FORMAT.md)):
+
+- **0.0.1** - Simple format for sharing via URL
+- **0.0.2** - OTIO-inspired format for local storage
 
 ```json
-{
-  "otio_compat": "litecut/1.0",
-  "media_pool": [...],
-  "tracks": [...]
-}
+{"version": "litecut/0.0.1", "tracks": {"video": [], "audio": []}}
+{"version": "litecut/0.0.2", "tracks": [{"kind": "video", "items": []}]}
 ```
 
 ## License

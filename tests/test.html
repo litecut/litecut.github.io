@@ -75,7 +75,7 @@
     // serializeProject() - simplified version for testing
     function serializeProject(media, clips) {
       return {
-        otio_compat: 'litecut/1.0',
+        version: 'litecut/0.0.2',
         id: 'project-1',
         name: 'Untitled Project',
         media_pool: media.map(m => ({
@@ -179,7 +179,7 @@
     const serialized = serializeProject(testMedia, testClips);
 
     renderGroup('Project Serialization', [
-      assertEqual(serialized.otio_compat, 'litecut/1.0', 'has correct version'),
+      assertEqual(serialized.version, 'litecut/0.0.2', 'has correct version'),
       assertEqual(serialized.media_pool.length, 2, 'serializes 2 media items'),
       assertEqual(serialized.media_pool[0].name, 'video.mp4', 'preserves media name'),
       assertEqual(serialized.media_pool[0].target_url, 'local://media-1', 'creates local URL'),

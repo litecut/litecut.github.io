@@ -37,7 +37,7 @@ export function serializeProject() {
   }
 
   return {
-    otio_compat: 'litecut/1.0',
+    version: 'litecut/0.0.2',
     id: state.projectId,
     name: state.projectName,
     created: new Date().toISOString(),

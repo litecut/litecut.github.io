@@ -20,7 +20,7 @@ export function isValidMediaUrl(urlString) {
   }
 }
 
-// Validate project JSON structure
+// Validate project JSON structure (0.0.2 format)
 export function validateProject(project) {
   const errors = [];
 
@@ -28,9 +28,10 @@ export function validateProject(project) {
     return { valid: false, errors: ['Project must be an object'] };
   }
 
-  // Check required fields
-  if (typeof project.otio_compat !== 'string') {
-    errors.push('Missing or invalid otio_compat field');
+  // Check version field (support both old otio_compat and new version)
+  const version = project.version || project.otio_compat;
+  if (typeof version !== 'string') {
+    errors.push('Missing or invalid version field');
   }
 
   if (!Array.isArray(project.media_pool)) {
@@ -161,19 +162,23 @@ export function detectAndValidateProject(project) {
     return { valid: false, errors: ['Project must be an object'], version: null };
   }
 
-  // Check for litecut/0.0.1 format
+  // Check for litecut/0.0.x format
   if (project.version && project.version.startsWith('litecut/')) {
     if (project.version === 'litecut/0.0.1') {
       const result = validateProjectV001(project);
       return { ...result, version: 'litecut/0.0.1' };
     }
+    if (project.version === 'litecut/0.0.2') {
+      const result = validateProject(project);
+      return { ...result, version: 'litecut/0.0.2' };
+    }
     return { valid: false, errors: [`Unsupported version: ${project.version}`], version: project.version };
   }
 
-  // Check for legacy internal format (otio_compat)
+  // Check for legacy internal format (otio_compat: litecut/1.0)
   if (project.otio_compat) {
     const result = validateProject(project);
-    return { ...result, version: 'internal' };
+    return { ...result, version: 'litecut/0.0.2' }; // Treat as 0.0.2
   }
 
   return { valid: false, errors: ['Unknown project format'], version: null };
