@@ -27,7 +27,27 @@ const projectListEl = document.getElementById('project-list');
 const saveStatus = document.getElementById('save-status');
 const previewEmpty = document.getElementById('preview-empty');
 
-console.log('LITECUT simple=1');
+console.log('LITECUT canvas=1');
+
+// Canvas for seamless transitions
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
+canvas.id = 'transition-canvas';
+canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;display:none;pointer-events:none;';
+video.parentNode.style.position = 'relative';
+video.parentNode.appendChild(canvas);
+
+function showCanvasFreeze() {
+  // Capture current frame to canvas
+  canvas.width = video.videoWidth || video.clientWidth;
+  canvas.height = video.videoHeight || video.clientHeight;
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  canvas.style.display = 'block';
+}
+
+function hideCanvas() {
+  canvas.style.display = 'none';
+}
 
 // Simple playback state
 let videoClips = [];
@@ -56,21 +76,27 @@ function getAudioUrl() {
 
 // Play a specific video clip
 let lastLoadedUrl = null;
+let isTransitioning = false;
 
-function playVideoClip(index) {
+function playVideoClip(index, useCanvasMask = false) {
   loadClips();
   if (index < 0 || index >= videoClips.length) return;
 
   const url = getVideoUrl(index);
   if (!url) return;
 
-  console.log(`playVideoClip(${index}): url=${url}, lastLoaded=${lastLoadedUrl}`);
+  console.log(`playVideoClip(${index}): mask=${useCanvasMask}`);
 
   // Skip if already loaded this exact URL
   if (url === lastLoadedUrl) {
-    console.log('  -> skipping, already loaded');
     clipIndex = index;
     return;
+  }
+
+  // Freeze frame during transition
+  if (useCanvasMask && video.readyState >= 2) {
+    showCanvasFreeze();
+    isTransitioning = true;
   }
 
   clipIndex = index;
@@ -79,6 +105,14 @@ function playVideoClip(index) {
   video.currentTime = videoClips[index].trimStart || 0;
   updatePreviewEmpty();
 }
+
+// Hide canvas when video starts playing
+video.addEventListener('playing', () => {
+  if (isTransitioning) {
+    hideCanvas();
+    isTransitioning = false;
+  }
+});
 
 // Initialize audio (load once)
 function initAudio() {
@@ -93,11 +127,11 @@ function initAudio() {
   }
 }
 
-// When video ends, play next
+// When video ends, play next with canvas masking
 video.addEventListener('ended', () => {
   console.log(`video ended, clipIndex=${clipIndex}`);
   if (clipIndex + 1 < videoClips.length) {
-    playVideoClip(clipIndex + 1);
+    playVideoClip(clipIndex + 1, true);  // Use canvas mask for seamless transition
     video.play();
   }
 });
