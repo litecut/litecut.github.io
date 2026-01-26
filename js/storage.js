@@ -1,6 +1,6 @@
 // IndexedDB storage operations
 import { state } from './state.js';
-import { validateProject, validateProjectV001, detectAndValidateProject } from './validation.js';
+import { validateProject, detectAndValidateProject } from './validation.js';
 import { generateId } from './utils.js';
 
 const DB_NAME = 'litecut';
