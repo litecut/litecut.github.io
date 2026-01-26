@@ -8,129 +8,10 @@ import { saveProject, loadProject, listProjects, loadProjectFromUrl } from './st
 // DOM Elements
 const fileInput = document.getElementById('file-input');
 const mediaList = document.getElementById('media-list');
-const preview = document.getElementById('preview');
+const video = document.getElementById('preview');
+const audio = document.createElement('audio');
 const timeDisplay = document.getElementById('time-display');
 const timeline = document.getElementById('timeline');
-
-console.log('LITECUT change=7');
-
-// Audio element for audio track playback
-const audioEl = document.createElement('audio');
-audioEl.id = 'audio-player';
-document.body.appendChild(audioEl);
-
-let audioClips = [];
-let audioClipIndex = -1;
-
-function loadAudioClips() {
-  audioClips = state.clips.filter(c => c.track === 'audio').sort((a, b) => a.startTime - b.startTime);
-}
-
-function getAudioClipAt(time) {
-  return audioClips.findIndex(c => time >= c.startTime && time < c.startTime + c.duration);
-}
-
-function syncAudio(timelineTime) {
-  loadAudioClips();
-  const idx = getAudioClipAt(timelineTime);
-
-  if (idx < 0) {
-    // No audio at this time
-    audioEl.pause();
-    audioClipIndex = -1;
-    return;
-  }
-
-  const clip = audioClips[idx];
-  const media = getMediaById(clip.mediaId);
-  if (!media) return;
-
-  // Load new audio if clip changed
-  if (idx !== audioClipIndex) {
-    audioClipIndex = idx;
-    audioEl.src = media.url;
-  }
-
-  // Sync position within clip
-  const clipTime = timelineTime - clip.startTime + (clip.trimStart || 0);
-  if (Math.abs(audioEl.currentTime - clipTime) > 0.3) {
-    audioEl.currentTime = clipTime;
-  }
-}
-
-// Dual video for seamless playback
-const videoB = document.createElement('video');
-videoB.id = 'preview-b';
-videoB.controls = true;
-videoB.style.display = 'none';
-preview.parentNode.insertBefore(videoB, preview.nextSibling);
-
-let activeVideo = preview;
-let nextVideo = videoB;
-let clipIndex = -1;
-let clips = [];
-
-function loadClips() {
-  clips = state.clips.filter(c => c.track === 'video').sort((a, b) => a.startTime - b.startTime);
-}
-
-function getClipUrl(index) {
-  if (index < 0 || index >= clips.length) return null;
-  const media = getMediaById(clips[index].mediaId);
-  return media ? media.url : null;
-}
-
-function playClip(index) {
-  loadClips();
-  if (index < 0 || index >= clips.length) return;
-
-  console.log(`playClip(${index})`);
-  clipIndex = index;
-
-  // First clip - just load and play
-  if (activeVideo.src === '' || !activeVideo.src.includes(getClipUrl(index)?.split('/').pop())) {
-    activeVideo.src = getClipUrl(index);
-    activeVideo.currentTime = clips[index].trimStart || 0;
-  }
-
-  // Preload next into the other video
-  const nextUrl = getClipUrl(index + 1);
-  if (nextUrl) {
-    nextVideo.src = nextUrl;
-    nextVideo.load();
-  }
-
-  // Initialize audio at this timeline position
-  const timelineTime = clips[index].startTime;
-  syncAudio(timelineTime);
-
-  updatePreviewEmpty();
-}
-
-function swapToNext() {
-  if (clipIndex + 1 >= clips.length) return;
-
-  console.log(`swapToNext: ${clipIndex} -> ${clipIndex + 1}`);
-  clipIndex++;
-
-  // Swap videos
-  activeVideo.style.display = 'none';
-  activeVideo.pause();
-
-  nextVideo.style.display = 'block';
-  nextVideo.currentTime = clips[clipIndex].trimStart || 0;
-  nextVideo.play();
-
-  // Swap references
-  [activeVideo, nextVideo] = [nextVideo, activeVideo];
-
-  // Preload next
-  const nextUrl = getClipUrl(clipIndex + 1);
-  if (nextUrl) {
-    nextVideo.src = nextUrl;
-    nextVideo.load();
-  }
-}
 const playhead = document.getElementById('playhead');
 const ruler = document.getElementById('ruler');
 const videoTrack = document.getElementById('video-track');
@@ -146,18 +27,115 @@ const projectListEl = document.getElementById('project-list');
 const saveStatus = document.getElementById('save-status');
 const previewEmpty = document.getElementById('preview-empty');
 
+console.log('LITECUT simple=1');
+
+// Simple playback state
+let videoClips = [];
+let audioClips = [];
+let clipIndex = -1;
+
+// Load clips from state
+function loadClips() {
+  videoClips = state.clips.filter(c => c.track === 'video').sort((a, b) => a.startTime - b.startTime);
+  audioClips = state.clips.filter(c => c.track === 'audio').sort((a, b) => a.startTime - b.startTime);
+}
+
+// Get URL for a video clip
+function getVideoUrl(index) {
+  if (index < 0 || index >= videoClips.length) return null;
+  const media = getMediaById(videoClips[index].mediaId);
+  return media ? media.url : null;
+}
+
+// Get URL for first audio clip (simple: just one audio track)
+function getAudioUrl() {
+  if (audioClips.length === 0) return null;
+  const media = getMediaById(audioClips[0].mediaId);
+  return media ? media.url : null;
+}
+
+// Play a specific video clip
+let lastLoadedUrl = null;
+
+function playVideoClip(index) {
+  loadClips();
+  if (index < 0 || index >= videoClips.length) return;
+
+  const url = getVideoUrl(index);
+  if (!url) return;
+
+  console.log(`playVideoClip(${index}): url=${url}, lastLoaded=${lastLoadedUrl}`);
+
+  // Skip if already loaded this exact URL
+  if (url === lastLoadedUrl) {
+    console.log('  -> skipping, already loaded');
+    clipIndex = index;
+    return;
+  }
+
+  clipIndex = index;
+  lastLoadedUrl = url;
+  video.src = url;
+  video.currentTime = videoClips[index].trimStart || 0;
+  updatePreviewEmpty();
+}
+
+// Initialize audio (load once)
+function initAudio() {
+  const url = getAudioUrl();
+  if (!url) return;
+
+  // Only set src if different (avoid reload)
+  const needsLoad = !audio.src.endsWith(url.split('/').pop());
+  if (needsLoad) {
+    console.log(`initAudio: ${url}`);
+    audio.src = url;
+  }
+}
+
+// When video ends, play next
+video.addEventListener('ended', () => {
+  console.log(`video ended, clipIndex=${clipIndex}`);
+  if (clipIndex + 1 < videoClips.length) {
+    playVideoClip(clipIndex + 1);
+    video.play();
+  }
+});
+
+// Sync time display and playhead
+video.addEventListener('timeupdate', () => {
+  const clip = videoClips[clipIndex];
+  if (clip) {
+    state.currentTime = clip.startTime + video.currentTime - (clip.trimStart || 0);
+  } else {
+    state.currentTime = video.currentTime;
+  }
+  timeDisplay.textContent = `${fmt(state.currentTime)} / ${fmt(state.duration)}`;
+  playhead.style.left = `${10 + state.currentTime * PX_PER_SEC}px`;
+  updateToolbar();
+});
+
+// Sync audio with video
+video.addEventListener('play', () => {
+  if (audio.src) {
+    audio.currentTime = state.currentTime;
+    audio.play();
+  }
+});
+video.addEventListener('pause', () => audio.pause());
+
+// Update preview empty state
+function updatePreviewEmpty() {
+  const hasSource = video.src && video.src !== '' && video.src !== window.location.href;
+  previewEmpty.classList.toggle('hidden', hasSource);
+}
+
 // Update project name display
 function updateProjectName() {
   projectNameEl.textContent = state.projectName;
 }
 
-// Update preview empty state visibility
-function updatePreviewEmpty() {
-  const hasSource = activeVideo.src && activeVideo.src !== '' && activeVideo.src !== window.location.href;
-  previewEmpty.classList.toggle('hidden', hasSource);
-}
-
-// Render callbacks for passing to other modules
+// Render callbacks
 const renderCallbacks = {
   renderMediaList: () => renderMediaList(mediaList),
   renderTimeline: () => renderTimeline(videoTrack, audioTrack, handleSelectClip),
@@ -168,8 +146,7 @@ const renderCallbacks = {
 
 // Update toolbar button states
 function updateToolbar() {
-  const hasSelection = state.selectedClipId !== null;
-  btnDelete.disabled = !hasSelection;
+  btnDelete.disabled = !state.selectedClipId;
   btnSplit.disabled = !canSplit();
 }
 
@@ -181,9 +158,7 @@ function handleSelectClip(clipId) {
 // Handle delete action
 function handleDelete() {
   if (!state.selectedClipId) return;
-
   if (!confirm('Delete this clip?')) return;
-
   if (deleteSelectedClip()) {
     renderCallbacks.renderTimeline();
     updateToolbar();
@@ -201,25 +176,16 @@ function handleSplit() {
 // Handle new project
 function handleNew() {
   if (state.media.length > 0 || state.clips.length > 0) {
-    if (!confirm('Create a new project? Unsaved changes will be lost.')) {
-      return;
-    }
+    if (!confirm('Create a new project? Unsaved changes will be lost.')) return;
   }
   resetState();
   clipIndex = -1;
-  clips = [];
-  audioClipIndex = -1;
+  videoClips = [];
   audioClips = [];
-  preview.src = '';
-  preview.removeAttribute('src');
-  videoB.src = '';
-  videoB.removeAttribute('src');
-  audioEl.src = '';
-  audioEl.removeAttribute('src');
-  activeVideo = preview;
-  nextVideo = videoB;
-  preview.style.display = 'block';
-  videoB.style.display = 'none';
+  video.src = '';
+  video.removeAttribute('src');
+  audio.src = '';
+  audio.removeAttribute('src');
   updatePreviewEmpty();
   renderCallbacks.renderMediaList();
   renderCallbacks.renderTimeline();
@@ -241,38 +207,33 @@ function handleRename() {
 // Render project list dropdown
 async function renderProjectList() {
   const projects = await listProjects();
-
   if (projects.length === 0) {
     projectListEl.innerHTML = '<div class="dropdown-empty">No saved projects</div>';
     return;
   }
-
   projectListEl.innerHTML = projects.map(p => {
     const date = new Date(p.modified).toLocaleDateString();
     const isCurrent = p.id === state.projectId;
-    return `
-      <div class="dropdown-item${isCurrent ? ' current' : ''}" data-id="${p.id}">
-        <span>${p.name}</span>
-        <span class="project-date">${date}</span>
-      </div>
-    `;
+    return `<div class="dropdown-item${isCurrent ? ' current' : ''}" data-id="${p.id}">
+      <span>${p.name}</span>
+      <span class="project-date">${date}</span>
+    </div>`;
   }).join('');
 
-  // Add click handlers
   projectListEl.querySelectorAll('.dropdown-item').forEach(item => {
     item.addEventListener('click', async () => {
-      const projectId = item.dataset.id;
       projectListEl.classList.remove('show');
-      await loadProject(saveStatus, renderCallbacks, projectId);
-      playClip(0);
+      await loadProject(saveStatus, renderCallbacks, item.dataset.id);
+      loadClips();
+      initAudio();
+      playVideoClip(0);
     });
   });
 }
 
 // Toggle project list dropdown
 function toggleProjectList() {
-  const isShowing = projectListEl.classList.contains('show');
-  if (isShowing) {
+  if (projectListEl.classList.contains('show')) {
     projectListEl.classList.remove('show');
   } else {
     renderProjectList();
@@ -319,10 +280,12 @@ fileInput.addEventListener('change', async (e) => {
     if (newClip) {
       renderCallbacks.renderTimeline();
       renderCallbacks.renderRuler();
+      loadClips();
       if (newClip.track === 'video') {
-        loadClips();
-        const idx = clips.findIndex(c => c.id === newClip.id);
-        if (idx >= 0) playClip(idx);
+        const idx = videoClips.findIndex(c => c.id === newClip.id);
+        if (idx >= 0) playVideoClip(idx);
+      } else {
+        initAudio();
       }
     }
   });
@@ -342,27 +305,6 @@ btnLoad.addEventListener('click', (e) => {
   toggleProjectList();
 });
 
-// Time update - move playhead and sync audio
-function onTimeUpdate() {
-  const clip = clips[clipIndex];
-  state.currentTime = clip ? clip.startTime + activeVideo.currentTime : activeVideo.currentTime;
-  timeDisplay.textContent = `${fmt(state.currentTime)} / ${fmt(state.duration)}`;
-  playhead.style.left = `${10 + state.currentTime * PX_PER_SEC}px`;
-  updateToolbar();
-
-  // Sync audio playback
-  syncAudio(state.currentTime);
-  if (!activeVideo.paused && audioClipIndex >= 0 && audioEl.paused) {
-    audioEl.play();
-  }
-}
-preview.addEventListener('timeupdate', onTimeUpdate);
-videoB.addEventListener('timeupdate', onTimeUpdate);
-
-// Video ended - swap to preloaded next
-preview.addEventListener('ended', swapToNext);
-videoB.addEventListener('ended', swapToNext);
-
 // Timeline click to seek
 timeline.addEventListener('click', (e) => {
   if (e.target.classList.contains('clip')) return;
@@ -371,18 +313,19 @@ timeline.addEventListener('click', (e) => {
   const time = Math.max(0, x / PX_PER_SEC);
 
   loadClips();
-  const idx = clips.findIndex(c => time >= c.startTime && time < c.startTime + c.duration);
+  const idx = videoClips.findIndex(c => time >= c.startTime && time < c.startTime + c.duration);
   if (idx >= 0) {
-    if (idx !== clipIndex) playClip(idx);
-    activeVideo.currentTime = time - clips[idx].startTime;
+    if (idx !== clipIndex) playVideoClip(idx);
+    const clip = videoClips[idx];
+    video.currentTime = (clip.trimStart || 0) + (time - clip.startTime);
   }
 
   state.currentTime = time;
   playhead.style.left = `${10 + time * PX_PER_SEC}px`;
   updateToolbar();
 
-  // Sync audio to new position
-  syncAudio(time);
+  // Sync audio
+  if (audio.src) audio.currentTime = time;
 
   if (e.target === timeline || e.target.classList.contains('track')) {
     handleSelectClip(null);
@@ -409,13 +352,8 @@ document.addEventListener('keydown', (e) => {
   switch (e.code) {
     case 'Space':
       e.preventDefault();
-      if (activeVideo.paused) {
-        activeVideo.play();
-        if (audioClipIndex >= 0) audioEl.play();
-      } else {
-        activeVideo.pause();
-        audioEl.pause();
-      }
+      if (video.paused) video.play();
+      else video.pause();
       break;
     case 'KeyS':
       e.preventDefault();
@@ -437,34 +375,33 @@ document.addEventListener('keydown', (e) => {
 async function loadFromQueryString() {
   const params = new URLSearchParams(window.location.search);
 
-  // Check for project URL first (litecut/0.0.1 format)
   const projectUrl = params.get('project');
   if (projectUrl) {
     try {
       await loadProjectFromUrl(projectUrl, saveStatus, renderCallbacks);
       updateProjectName();
-      playClip(0); // Start with first video clip
+      loadClips();
+      initAudio();
+      playVideoClip(0);
     } catch (err) {
       console.error('Failed to load project:', err);
     }
     return;
   }
 
-  // Check for single track URL (simple mode)
   const trackUrl = params.get('track');
   if (!trackUrl) return;
 
   saveStatus.textContent = 'Loading from URL...';
-
   try {
     const item = await addMediaFromUrl(trackUrl);
     addClip(item.id, item.type, 0);
-
     renderCallbacks.renderMediaList();
     renderCallbacks.renderTimeline();
     renderCallbacks.renderRuler();
-
-    playClip(0);
+    loadClips();
+    if (item.type === 'video') playVideoClip(0);
+    else initAudio();
     saveStatus.textContent = `Loaded: ${item.name}`;
   } catch (err) {
     saveStatus.textContent = `Error loading URL: ${err.message}`;
