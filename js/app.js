@@ -12,6 +12,7 @@ $('ver').textContent = 'v' + VERSION;
 
 const status = (t) => { $('status').textContent = t; if (t) setTimeout(() => { if ($('status').textContent === t) $('status').textContent = ''; }, 4000); };
 const fmt = (frames) => { const s = frames / (model?.fps || 30); return `${Math.floor(s / 60)}:${(s % 60).toFixed(1).padStart(4, '0')}`; };
+const MARK = {YELLOW: '#d4a017', ORANGE: '#e07b2a', GREEN: '#2e9d5b', CYAN: '#2a8fb0', PURPLE: '#8a5bd0', RED: '#d04545', BLUE: '#3d6be0', PINK: '#d0508a', MAGENTA: '#b040a0'};
 const colour = (name) => { const k = (name || '').toLowerCase().split(' ')[0]; return getComputedStyle(document.documentElement).getPropertyValue(`--c-${k}`).trim() || 'var(--c-other)'; };
 
 // ── loading ──
@@ -72,11 +73,11 @@ function render() {
   const step = [1, 2, 5, 10, 30, 60].find((s) => s * model.fps * pxPerFrame > 60) || 60;
   const ticks = [];
   for (let s = 0; s * model.fps <= model.duration; s += step) { const d = document.createElement('div'); d.className = 'tick'; d.style.left = `${s * model.fps * pxPerFrame}px`; d.textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; ticks.push(d); }
-  for (const m of model.markers) { const d = document.createElement('div'); d.className = 'mk'; d.title = m.name; d.style.left = `${m.start * pxPerFrame}px`; d.style.width = `${Math.max(2, m.dur * pxPerFrame)}px`; d.style.background = (m.color || 'yellow').toLowerCase(); ticks.push(d); }
+  for (const m of model.markers) { const d = document.createElement('div'); d.className = 'mk'; d.title = m.name; d.style.left = `${m.start * pxPerFrame}px`; d.style.width = `${Math.max(2, m.dur * pxPerFrame)}px`; d.style.background = MARK[(m.color || 'YELLOW').toUpperCase()] || '#d4a017'; ticks.push(d); }
   rulerEl.replaceChildren(...ticks);
   headsEl.replaceChildren(...model.lanes.map((l) => {
     const h = document.createElement('div'); h.className = 'head';
-    const n = document.createElement('span'); n.className = 'n'; n.textContent = l.name; n.style.color = colour(l.name); n.title = `${l.name} (${l.kind}, ${l.clips.length} clips)`;
+    const n = document.createElement('span'); n.className = 'n'; n.textContent = l.name; n.style.borderLeft = `4px solid ${colour(l.name)}`; n.style.paddingLeft = '6px'; n.title = `${l.name} (${l.kind}, ${l.clips.length} clips)`;
     const mb = document.createElement('button'); mb.textContent = 'M'; mb.title = 'Mute'; mb.className = l.mute ? 'on' : ''; mb.onclick = () => { l.mute = !l.mute; render(); };
     const sb = document.createElement('button'); sb.textContent = 'S'; sb.title = 'Solo'; sb.className = l.solo ? 'on' : ''; sb.onclick = () => { l.solo = !l.solo; render(); };
     h.append(n, mb, sb); return h;

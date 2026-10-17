@@ -1,5 +1,5 @@
-:root{--bg:#121316;--panel:#1b1d22;--panel2:#23262d;--line:#30343c;--text:#e6e7ea;--dim:#9aa0aa;--accent:#2fd3c8;--sel:#ffd34d;
-  --c-picture:#5b7cfa;--c-shots:#3c6e8f;--c-dialogue:#2fbf71;--c-score:#a46cf2;--c-ambience:#3aa6a0;--c-pad:#6a8f6a;--c-effects:#f08a3c;--c-generated:#e2557a;--c-other:#7a8090}
+:root{--bg:#f4f5f7;--panel:#ffffff;--panel2:#eef0f3;--line:#dde0e6;--text:#1d2128;--dim:#666d78;--accent:#0f9d94;--sel:#e5a50a;
+  --c-picture:#7f9cff;--c-shots:#8fb3cc;--c-dialogue:#5fd39a;--c-score:#c3a2f7;--c-ambience:#7fd0ca;--c-pad:#a9c7a9;--c-effects:#f6b07a;--c-generated:#f290aa;--c-other:#b9bec8}
 *{box-sizing:border-box}html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--text);font:13px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;display:grid;grid-template-rows:auto 1fr auto;overflow:hidden}
 button,.btn{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:5px 10px;font:inherit;cursor:pointer}
@@ -15,7 +15,7 @@ button:hover,.btn:hover{border-color:var(--accent)}
 #lib-list{list-style:none;margin:0;padding:0 6px 8px;overflow:auto}
 #lib-list li{padding:6px 8px;border-radius:6px;cursor:pointer}#lib-list li:hover{background:var(--panel2)}#lib-list li.on{background:var(--panel2);color:var(--accent)}
 .viewer{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;min-height:0;padding:10px;gap:8px}
-video{max-width:100%;max-height:calc(100% - 40px);background:#000;border-radius:6px}
+video{max-width:100%;max-height:calc(100% - 40px);background:#000;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.12)}
 .transport{display:flex;gap:12px;align-items:center;color:var(--dim)}#status{color:var(--accent)}
 .inspector{background:var(--panel);border-left:1px solid var(--line);padding:12px;overflow:auto}
 .inspector h3{margin:0 0 8px;font-size:14px}.inspector .hint{color:var(--dim)}
@@ -34,9 +34,10 @@ video{max-width:100%;max-height:calc(100% - 40px);background:#000;border-radius:
 .tick{position:absolute;top:0;height:22px;border-left:1px solid var(--line);font-size:10px;color:var(--dim);padding-left:3px}
 .mk{position:absolute;top:13px;height:9px;min-width:2px;border-radius:2px;opacity:.85}
 .lane{position:relative;height:30px;border-bottom:1px solid var(--line)}
-.clip{position:absolute;top:3px;height:24px;border-radius:5px;padding:0 6px;font-size:11px;line-height:24px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#0b0c0e;cursor:grab;user-select:none;border:1px solid rgba(0,0,0,.35)}
-.clip.sel{outline:2px solid var(--sel);z-index:2}.clip.muted{opacity:.35}
+.clip{position:absolute;top:3px;height:24px;border-radius:5px;padding:0 6px;font-size:11px;line-height:24px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#1d2128;cursor:grab;user-select:none;border:1px solid rgba(0,0,0,.35)}
+.clip.sel{outline:2px solid var(--text);z-index:2}.clip.muted{opacity:.35}
 .clip .h{position:absolute;top:0;width:6px;height:100%;cursor:ew-resize}.clip .h.l{left:0}.clip .h.r{right:0}
-.playhead{position:absolute;top:0;bottom:0;width:2px;background:var(--sel);pointer-events:none;z-index:4}
+.playhead{position:absolute;top:0;bottom:0;width:2px;background:#d64545;pointer-events:none;z-index:4}
 @media (max-width:900px){.stage{grid-template-columns:1fr}.inspector,.library{display:none}.timeline{height:44vh}}
 .library[hidden]{display:none}
+.stage:has(> .library[hidden]){grid-template-columns:1fr 320px}
