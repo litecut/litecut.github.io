@@ -34,3 +34,17 @@ its place on the timeline, and LiteCut keeps it so.
 
 `{"version": "0.0.1", "tracks": {"video": [...], "audio": [...]}}` and `{"version": "litecut/0.0.2", "media_pool": [...], ...}`
 open and become a two-track timeline.
+
+## Libraries
+
+The library panel opens any of three documents, chosen from the switcher at its top (built-in libraries, then any the viewer
+added, remembered in the browser):
+
+- **A catalogue**: a schema.org `ItemList`. Each `itemListElement.item` is a film with `name`, `url` (its timeline),
+  `thumbnailUrl`, `duration` (ISO 8601, `PT59S`), `description`, `keywords` (shown as filter chips) and `video.contentUrl`.
+  Example: https://melvin.me/public/aesop/library.jsonld
+- **A film library**: a series with `hasPart` (the older Aesop `universe.jsonld`).
+- **A Solid pod folder**: any LDP container URL ending in `/`, fetched as JSON-LD. Its subfolders and `.jsonld` / `.otio` /
+  `.json` files are listed; drop a timeline into a folder on your pod and it shows up.
+
+`?library=<url>` opens one directly.

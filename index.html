@@ -39,8 +39,10 @@
 </header>
 <main class="stage">
   <aside class="library" id="library" hidden>
+    <div class="libsel"><select id="lib-select" aria-label="Library"></select></div>
     <div class="tabs" role="tablist"><button data-tab="films" class="on" role="tab">Films</button><button data-tab="lines" role="tab">Lines</button><button data-tab="cast" role="tab">Characters</button></div>
     <div class="lib-head"><input id="lib-filter" placeholder="Filter" aria-label="Filter"><span id="lib-count"></span></div>
+    <div class="chips" id="chips"></div>
     <ul id="lib-list"></ul>
   </aside>
   <section class="viewer">

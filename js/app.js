@@ -2,10 +2,14 @@
 // formats) from ?project=<url>, ?library=<url>, ?track=<video>, a file or the library; show it as lanes over the film; move, trim,
 // split and delete clips; edit prompts and directions; save in the browser, download, or PUT back to its URL (a Solid pod).
 import {createMix} from './audio.js';
-import {VERSION, detect, libraryItems, collectionItems, fromTimeline, toTimeline, fromLegacy, fromVideo, moveClip, trimClip, splitClip,
+import {VERSION, detect, libraryItems, folderItems, collectionItems, fromTimeline, toTimeline, fromLegacy, fromVideo, moveClip, trimClip, splitClip,
   deleteClip, describe, setPath, resolve} from './model.js';
 
-const DEFAULT_LIBRARY = 'https://melvin.me/public/aesop/universe.jsonld';
+const DEFAULT_LIBRARY = 'https://melvin.me/public/aesop/library.jsonld';
+// the libraries in the switcher: the built-in ones, then any the viewer added (a catalogue, a film library or a pod folder)
+const BUILT_IN = [{name: 'Aesop (100 fables)', url: DEFAULT_LIBRARY}];
+const store = {get: (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } }, set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }};
+let libraries = [...BUILT_IN, ...store.get('litecut.libraries', [])], tagOn = new Set();
 const $ = (id) => document.getElementById(id);
 const video = $('video'), lanesEl = $('lanes'), headsEl = $('heads'), rulerEl = $('ruler'), canvas = $('canvas'), scroller = $('scroller');
 let model = null, srcUrl = null, sel = null, undo = [], pxPerFrame = 2, films = [], tab = 'films';
@@ -14,12 +18,14 @@ const mix = createMix(video, () => model, (t) => status(t));
 
 let mixState = '';
 const status = (t) => { if (/^(Live mix|No playable)/.test(t)) mixState = t; $('status').textContent = t; if (t && t !== mixState) setTimeout(() => { if ($('status').textContent === t) $('status').textContent = mixState; }, 4000); };  // the mix state stays shown
+const fmtS = (s) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`;
 const fmt = (frames) => { const s = frames / (model?.fps || 30); return `${Math.floor(s / 60)}:${(s % 60).toFixed(1).padStart(4, '0')}`; };
 const MARK = {YELLOW: '#d4a017', ORANGE: '#e07b2a', GREEN: '#2e9d5b', CYAN: '#2a8fb0', PURPLE: '#8a5bd0', RED: '#d04545', BLUE: '#3d6be0', PINK: '#d0508a', MAGENTA: '#b040a0'};
 const colour = (name) => { const k = (name || '').toLowerCase().split(' ')[0]; return getComputedStyle(document.documentElement).getPropertyValue(`--c-${k}`).trim() || 'var(--c-other)'; };
 
 // ── loading ──
-async function fetchJson(url) { const r = await fetch(url); if (!r.ok) throw new Error(`${r.status} ${url}`); return r.json(); }
+// ask for JSON-LD, so a Solid pod folder answers with its listing and a page with its embedded data
+async function fetchJson(url) { const r = await fetch(url, {headers: {Accept: 'application/ld+json, application/json;q=0.9'}}); if (!r.ok) throw new Error(`${r.status} ${url}`); return r.json(); }
 
 async function open(url) {
   try {
@@ -32,7 +38,8 @@ async function open(url) {
 
 async function openDoc(doc, url) {
   const kind = detect(doc);
-  if (kind === 'library') { showLibrary(libraryItems(doc, url).map((it) => ({...it, open: () => open(it.url)}))); status('Library loaded'); return; }
+  if (kind === 'library') { remember(doc.name || url, url); showLibrary(libraryItems(doc, url).map((it) => ({...it, open: () => open(it.url)}))); status('Library loaded'); return; }
+  if (kind === 'folder') { remember(decodeURIComponent(url.replace(/\/$/, '').split('/').pop()) + '/', url); showLibrary(folderItems(doc, url).map((it) => ({...it, open: () => open(it.url)}))); status(`Folder: ${folderItems(doc, url).length} items`); return; }
   if (kind === 'collection') {
     const items = collectionItems(doc);
     showLibrary(items.map((it) => ({name: it.name, open: () => load(it.doc, url)})));
@@ -56,7 +63,22 @@ function load(doc, url) {
   mix.stop(); mix.prepare();
 }
 
-function showLibrary(items) { films = items; $('library').hidden = false; setTab('films'); }
+function showLibrary(items) { films = items; tagOn = new Set(); $('library').hidden = false; setTab('films'); }
+function remember(name, url) {
+  if (!url || libraries.some((l) => l.url === url)) { drawLibSelect(url); return; }
+  libraries.push({name, url}); store.set('litecut.libraries', libraries.filter((l) => !BUILT_IN.some((b) => b.url === l.url))); drawLibSelect(url);
+}
+function drawLibSelect(current) {
+  const sel = $('lib-select');
+  sel.replaceChildren(...libraries.map((l) => new Option(l.name, l.url, false, l.url === current)), new Option('Add a library or pod folder\u2026', '+'));
+}
+$('lib-select').onchange = (e) => {
+  const v = e.target.value;
+  if (v !== '+') return open(v);
+  const u = prompt('A catalogue, a film library, or a Solid pod folder (a URL ending in /)');
+  if (u) open(u); else drawLibSelect(libraries[0]?.url);
+};
+drawLibSelect(DEFAULT_LIBRARY);
 
 // every clip with words (dialogue, captions): time, speaker, text; and the cast with its voices, from the document itself
 function lines() {
@@ -81,7 +103,14 @@ function drawPanel() {
   const q = $('lib-filter').value.toLowerCase(), list = $('lib-list'), li = (html, onclick) => { const e = document.createElement('li'); e.innerHTML = html; if (onclick) e.onclick = onclick; return e; };
   const esc = (t) => String(t ?? '').replace(/[&<>"]/g, (c) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
   let rows = [];
-  if (tab === 'films') rows = films.filter((i) => i.name.toLowerCase().includes(q)).map((i) => li(esc(i.name), (e) => { list.querySelectorAll('li').forEach((x) => x.classList.remove('on')); e.currentTarget.classList.add('on'); i.open(); }));
+  const allTags = tab === 'films' ? [...new Set(films.flatMap((i) => i.tags || []))].filter((t) => t !== 'fable') : [];
+  $('chips').replaceChildren(...allTags.map((t) => { const b = document.createElement('button'); b.textContent = t; b.className = tagOn.has(t) ? 'on' : ''; b.onclick = () => { tagOn.has(t) ? tagOn.delete(t) : tagOn.add(t); drawPanel(); }; return b; }));
+  if (tab === 'films') rows = films.filter((i) => (i.name + ' ' + (i.description || '')).toLowerCase().includes(q) && [...tagOn].every((t) => (i.tags || []).includes(t))).map((i) => {
+    const e = li(i.thumb ? `<img src="${esc(i.thumb)}" alt="" loading="lazy"><div><div class="n">${esc(i.name)}</div><div class="m">${i.seconds ? fmtS(i.seconds) + ' · ' : ''}${esc(i.description || '')}</div><div>${(i.tags || []).filter((t) => t !== 'fable').map((t) => `<span class="tg">${esc(t)}</span>`).join('')}</div></div>` : (i.folder ? '\u{1F4C1} ' : '') + esc(i.name),
+      (ev) => { list.querySelectorAll('li').forEach((x) => x.classList.remove('on')); ev.currentTarget.classList.add('on'); i.open(); });
+    if (i.thumb) e.className = 'film';
+    return e;
+  });
   if (tab === 'lines') rows = lines().filter((x) => (x.who + ' ' + x.text).toLowerCase().includes(q)).map((x) =>
     li(`<span class="t">${fmt(x.clip.start)}</span><span class="w">${esc(x.who)}</span>${esc(x.text)}`, () => { fresh = false; video.currentTime = x.clip.start / model.fps; select(x.lane, x.clip); }));
   if (tab === 'cast') rows = cast().filter((r) => JSON.stringify(r).toLowerCase().includes(q)).map((r) =>

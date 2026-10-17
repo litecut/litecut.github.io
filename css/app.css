@@ -9,7 +9,7 @@ button:hover,.btn:hover{border-color:var(--accent)}
 .title{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--dim)}
 .actions{display:flex;gap:6px;flex-wrap:wrap}
 .stage{display:grid;grid-template-columns:auto 1fr 320px;min-height:0}
-.library{width:260px;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.library{width:300px;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
 .lib-head{display:flex;gap:6px;align-items:center;padding:8px}.lib-head input{flex:1;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:5px}
 #lib-count{color:var(--dim);font-size:11px}
 #lib-list{list-style:none;margin:0;padding:0 6px 8px;overflow:auto}
@@ -45,3 +45,9 @@ video{max-width:100%;max-height:calc(100% - 40px);background:#000;border-radius:
 #lib-list li .t{color:var(--dim);font-size:11px;margin-right:6px;font-variant-numeric:tabular-nums}#lib-list li .w{font-weight:600;margin-right:4px}
 #lib-list li .d{display:block;color:var(--dim);font-size:11px}
 video{cursor:pointer}
+.libsel{padding:8px 8px 0}.libsel select{width:100%;padding:5px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--text);font:inherit}
+.chips{display:flex;flex-wrap:wrap;gap:4px;padding:0 8px 6px}.chips button{padding:1px 8px;font-size:11px;border-radius:12px}.chips button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+#lib-list li.film{display:grid;grid-template-columns:96px 1fr;gap:8px;align-items:start;padding:6px}
+#lib-list li.film img{width:96px;height:50px;object-fit:cover;border-radius:4px;background:var(--panel2)}
+#lib-list li.film .n{font-weight:600;line-height:1.25}#lib-list li.film .m{color:var(--dim);font-size:11px}
+#lib-list li.film .tg{display:inline-block;font-size:10px;color:var(--accent);margin-right:4px}

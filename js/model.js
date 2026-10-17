@@ -18,19 +18,35 @@ export function detect(doc) {
   if (/^Timeline\./.test(doc.OTIO_SCHEMA || '')) return 'timeline';
   if (/^SerializableCollection\./.test(doc.OTIO_SCHEMA || '')) return 'collection';
   if (Array.isArray(doc['@graph']) && doc['@graph'].some((n) => n.hasPart)) return 'library';
+  if (doc.itemListElement || doc['@type'] === 'ItemList') return 'library';  // a catalogue (schema.org ItemList)
+  const types = [].concat(doc['@type'] || []);
+  if (doc.contains || doc['ldp:contains'] || types.some((t) => /Container$/.test(t))) return 'folder';  // a Solid pod folder
   if (doc.version === '0.0.1' && doc.tracks && !Array.isArray(doc.tracks)) return 'litecut-0.0.1';
   if (doc.version === 'litecut/0.0.2') return 'litecut-0.0.2';
   return null;
 }
 
-/** The films a library document lists: [{name, url (the timeline), video}] resolved against base. */
+/** The films a library document lists: [{name, url (the timeline), video, thumb, seconds, description, tags}] resolved against base.
+ *  Reads a schema.org ItemList (a catalogue) or a series with hasPart (the Aesop universe). */
 export function libraryItems(doc, base) {
+  const abs = (u) => (u ? resolve(u, base) : null);
+  if (doc.itemListElement) return doc.itemListElement.map((li) => li.item || li).map((m) => ({
+    name: m.name || m.url, url: abs(m.url || (m['@id'] || '').split('#')[0]), video: abs(m.video?.contentUrl || m.contentUrl), thumb: abs(m.thumbnailUrl || m.image),
+    seconds: Number((/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?/.exec(m.duration || '') || []).slice(1).reduce((a, v, i) => a + (Number(v) || 0) * [3600, 60, 1][i], 0)) || 0,
+    description: m.description || '', tags: [].concat(m.keywords || [])}));
   const series = doc['@graph'].find((n) => n.hasPart);
   const movies = new Map(doc['@graph'].filter((n) => n['@type'] === 'Movie').map((n) => [n['@id'], n]));
   return series.hasPart.map((p) => {
     const m = movies.get(p['@id']) || {}, id = p['@id'].split('#')[0];
-    return {name: m.name || id, url: new URL(id, base).href, video: m.video?.contentUrl ? new URL(m.video.contentUrl, base).href : null};
+    return {name: m.name || id, url: new URL(id, base).href, video: m.video?.contentUrl ? new URL(m.video.contentUrl, base).href : null, tags: []};
   });
+}
+
+/** A Solid pod folder (an LDP container): its subfolders and the timelines in it, [{name, url, folder}]. */
+export function folderItems(doc, base) {
+  const kids = [].concat(doc.contains || doc['ldp:contains'] || []).map((c) => (typeof c === 'string' ? c : c['@id'])).filter(Boolean).map((u) => resolve(u, base));
+  return kids.filter((u) => u.endsWith('/') || /\.(jsonld|otio|json)$/.test(u)).sort()
+    .map((u) => ({name: decodeURIComponent(u.replace(/\/$/, '').split('/').pop()) + (u.endsWith('/') ? '/' : ''), url: u, folder: u.endsWith('/'), tags: []}));
 }
 
 /** The timelines inside an OTIO SerializableCollection (a series of seasons of episodes), depth first: [{name, path, doc}]. */
