@@ -7,7 +7,7 @@ import {VERSION, detect, libraryItems, collectionItems, fromTimeline, toTimeline
 const DEFAULT_LIBRARY = 'https://melvin.me/public/aesop/universe.jsonld';
 const $ = (id) => document.getElementById(id);
 const video = $('video'), lanesEl = $('lanes'), headsEl = $('heads'), rulerEl = $('ruler'), canvas = $('canvas'), scroller = $('scroller');
-let model = null, srcUrl = null, sel = null, undo = [], pxPerFrame = 2;
+let model = null, srcUrl = null, sel = null, undo = [], pxPerFrame = 2, films = [], tab = 'films';
 $('ver').textContent = 'v' + VERSION;
 
 const status = (t) => { $('status').textContent = t; if (t) setTimeout(() => { if ($('status').textContent === t) $('status').textContent = ''; }, 4000); };
@@ -48,21 +48,44 @@ function load(doc, url) {
   pxPerFrame = model.duration ? Math.max(0.2, Math.min(12, w / model.duration)) : 2;
   $('zoom').value = pxPerFrame;
   render(); inspect(null); status('');
+  if (!films.length) setTab('lines'); else if (!$('library').hidden && tab !== 'films') drawPanel();
 }
 
-function showLibrary(items) {
-  $('library').hidden = false;
-  const draw = () => {
-    const q = $('lib-filter').value.toLowerCase(), list = $('lib-list');
-    list.replaceChildren(...items.filter((i) => i.name.toLowerCase().includes(q)).map((i) => {
-      const li = document.createElement('li'); li.textContent = i.name;
-      li.onclick = () => { list.querySelectorAll('li').forEach((x) => x.classList.remove('on')); li.classList.add('on'); i.open(); };
-      return li;
-    }));
-    $('lib-count').textContent = `${items.length}`;
-  };
-  $('lib-filter').oninput = draw; draw();
+function showLibrary(items) { films = items; $('library').hidden = false; setTab('films'); }
+
+// every clip with words (dialogue, captions): time, speaker, text; and the cast with its voices, from the document itself
+function lines() {
+  if (!model) return [];
+  const out = [];
+  for (const l of model.lanes) for (const c of l.clips) if (c.node.text) out.push({lane: l, clip: c, who: (c.node.spokenByCharacter?.['@id'] || '').split('#char/').pop(), text: c.node.text});
+  return out.sort((a, b) => a.clip.start - b.clip.start);
 }
+function cast() {
+  if (!model) return [];
+  const voices = [].concat(model.doc.actor || []), chars = [].concat(model.doc.character || []);
+  const rows = voices.map((v) => ({name: (v.character?.['@id'] || v['@id'] || '').split(/#char\/|\/voice\//).pop(), voice: v.name, engine: v.engine?.name, about: v.description}));
+  for (const c of chars) { const id = (c['@id'] || '').split('#char/').pop(); if (id && !rows.some((r) => r.name === id)) rows.push({name: c.characterName || id, about: c.description}); }
+  return rows;
+}
+function setTab(t) {
+  tab = t; $('library').hidden = false;
+  document.querySelectorAll('.tabs button').forEach((b) => b.classList.toggle('on', b.dataset.tab === t));
+  $('lib-filter').value = ''; drawPanel();
+}
+function drawPanel() {
+  const q = $('lib-filter').value.toLowerCase(), list = $('lib-list'), li = (html, onclick) => { const e = document.createElement('li'); e.innerHTML = html; if (onclick) e.onclick = onclick; return e; };
+  const esc = (t) => String(t ?? '').replace(/[&<>"]/g, (c) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+  let rows = [];
+  if (tab === 'films') rows = films.filter((i) => i.name.toLowerCase().includes(q)).map((i) => li(esc(i.name), (e) => { list.querySelectorAll('li').forEach((x) => x.classList.remove('on')); e.currentTarget.classList.add('on'); i.open(); }));
+  if (tab === 'lines') rows = lines().filter((x) => (x.who + ' ' + x.text).toLowerCase().includes(q)).map((x) =>
+    li(`<span class="t">${fmt(x.clip.start)}</span><span class="w">${esc(x.who)}</span>${esc(x.text)}`, () => { fresh = false; video.currentTime = x.clip.start / model.fps; select(x.lane, x.clip); }));
+  if (tab === 'cast') rows = cast().filter((r) => JSON.stringify(r).toLowerCase().includes(q)).map((r) =>
+    li(`<span class="w">${esc(r.name)}</span>${esc(r.voice || '')}${r.engine ? ` <span class="t">${esc(r.engine)}</span>` : ''}${r.about ? `<span class="d">${esc(r.about)}</span>` : ''}`, () => { $('lib-filter').value = r.name; setTab('lines'); $('lib-filter').value = r.name; drawPanel(); }));
+  list.replaceChildren(...rows);
+  $('lib-count').textContent = `${rows.length}`;
+}
+$('lib-filter').oninput = () => drawPanel();
+document.querySelectorAll('.tabs button').forEach((b) => (b.onclick = () => setTab(b.dataset.tab)));
 
 // ── drawing ──
 function render() {
@@ -170,12 +193,19 @@ $('b-play').onclick = () => (video.paused ? video.play() : video.pause());
 video.onplay = () => ($('b-play').textContent = 'Pause'); video.onpause = () => ($('b-play').textContent = 'Play');
 video.ontimeupdate = drawPlayhead;
 (function tick() { if (!video.paused) drawPlayhead(); requestAnimationFrame(tick); })();
-video.onloadedmetadata = () => { if (model && !model.duration) { const doc = fromVideo(model.video, video.duration); load(doc, srcUrl); } };
+// a still instead of a black box: until the first play, show a frame a few seconds in (past a title card), then play from the start
+let fresh = true;
+video.onloadedmetadata = () => {
+  if (model && !model.duration) { const doc = fromVideo(model.video, video.duration); load(doc, srcUrl); return; }
+  if (video.paused && video.currentTime === 0) { fresh = true; video.currentTime = Math.min(3.5, video.duration * 0.1); }
+};
+video.addEventListener('play', () => { if (fresh) { fresh = false; video.currentTime = 0; } });
+rulerEl.addEventListener('click', () => { fresh = false; });
 rulerEl.onclick = (e) => { const r = canvas.getBoundingClientRect(); video.currentTime = Math.max(0, (e.clientX - r.left) / pxPerFrame / model.fps); drawPlayhead(); };
 lanesEl.onclick = (e) => { if (e.target === lanesEl || e.target.classList.contains('lane')) select(null, null); };
 scroller.onscroll = () => { headsEl.style.marginTop = `${-scroller.scrollTop}px`; };
 $('zoom').oninput = (e) => { pxPerFrame = Number(e.target.value); render(); };
-$('b-library').onclick = () => { const lib = $('library'); if (lib.hidden && !$('lib-list').children.length) open(new URLSearchParams(location.search).get('library') || DEFAULT_LIBRARY); else lib.hidden = !lib.hidden; };
+$('b-library').onclick = () => { const lib = $('library'); if (!films.length) open(new URLSearchParams(location.search).get('library') || DEFAULT_LIBRARY); else lib.hidden = !lib.hidden; };
 $('b-open').onclick = () => { const u = prompt('Timeline URL (.otio or .jsonld)'); if (u) open(u); };
 $('f-open').onchange = async (e) => { const f = e.target.files[0]; if (f) openDoc(JSON.parse(await f.text()), null); };
 $('b-undo').onclick = restore; $('b-save').onclick = saveLocal; $('b-download').onclick = download; $('b-put').onclick = putBack;
