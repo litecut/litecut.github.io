@@ -1,56 +1,38 @@
 # LiteCut
 
-Lightweight browser-based video editor. No install, no build step, just open and edit.
+A light browser video editor for timelines that are both **OpenTimelineIO** and **JSON-LD**. No install, no build step.
 
-**[Try it now at litecut.org](https://litecut.org)**
+**[litecut.org](https://litecut.org)**
 
-## Features
+LiteCut shows a film as lanes (picture, shots, dialogue, score, ambience, effects, generated clips) over the playing video, with
+each clip's prompt, direction and credits beside it. Move, trim, split and delete clips; edit a line's direction or a clip's prompt;
+save in the browser, download, or save back to the URL it came from (a Solid pod).
 
-- Import video/audio files
-- Timeline with drag & drop
-- Split clips (S key)
-- Delete clips (Del key)
-- Save/load projects locally
-- Load from URL: `?track=https://example.com/video.mp4`
-- OTIO-inspired project format
-- Solid Pod ready
+Open anything made before:
 
-## Usage
+| What | How |
+|---|---|
+| an OTIO timeline (`.otio`, Resolve, Kdenlive, ...) | `?project=<url>`, Open URL, or File |
+| an OTIO + JSON-LD timeline (e.g. an Aesop fable) | `?project=https://melvin.me/public/aesop/fox-and-stork/fox-and-stork.jsonld` |
+| an OTIO collection (a series of episodes, e.g. DAY 10) | `?project=<url>`: the episodes appear in the library |
+| a library of films (a JSON-LD series with `hasPart`) | `?library=<url>`; the default is the Aesop library |
+| a single video | `?track=<video url>` |
+| LiteCut 0.0.x projects (the 2025/26 proof of concept) | opened and converted to a timeline |
 
-Just open `index.html` in a browser, or:
+The data model is in [FORMAT.md](FORMAT.md).
 
-```bash
-npx serve .
-```
+## Keys
 
-### Query Parameters
+Space play/pause · S split at the playhead · Delete delete · drag a clip to move it · drag its edges to trim · Ctrl+Z undo · Ctrl+S save
 
-Load a video directly:
-```
-https://litecut.org?track=https://example.com/video.mp4
-```
+## Run
 
-### Keyboard Shortcuts
+Open `index.html` through any static server (`npx serve .`). Tests: `node test/model.test.mjs <timeline.jsonld>`.
 
-| Key | Action |
-|-----|--------|
-| Space | Play/Pause |
-| S | Split at playhead |
-| Delete | Delete selected clip |
-| Escape | Deselect |
-| Ctrl+S | Save project |
+## Deployments
 
-## Project Format
-
-LiteCut uses two JSON formats (see [FORMAT.md](FORMAT.md)):
-
-- **0.0.1** - Simple format for sharing via URL
-- **0.0.2** - OTIO-inspired format for local storage
-
-```json
-{"version": "litecut/0.0.1", "tracks": {"video": [], "audio": []}}
-{"version": "litecut/0.0.2", "tracks": [{"kind": "video", "items": []}]}
-```
+LiteCut is the general tool; [Aesop](https://melvin.me/public/aesop/) is one deployment of it (100 short films whose timelines
+are OTIO + JSON-LD).
 
 ## License
 

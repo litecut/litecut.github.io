@@ -1,98 +1,46 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LiteCut - Browser Video Editor</title>
-  <meta name="description" content="Lightweight browser-based video editor. No install, no build step, just open and edit.">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="LiteCut - Browser Video Editor">
-  <meta property="og:description" content="Lightweight browser-based video editor. No install, no build step, just open and edit.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://litecut.org">
-  <meta property="og:image" content="https://litecut.org/ogp.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="LiteCut - Browser Video Editor">
-  <meta name="twitter:description" content="Lightweight browser-based video editor. No install, no build step, just open and edit.">
-  <meta name="twitter:image" content="https://litecut.org/ogp.png">
-
-  <link rel="stylesheet" href="css/styles.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LiteCut</title>
+<meta name="description" content="A light browser video editor for timelines that are both OpenTimelineIO and JSON-LD: lanes, prompts and directions, open from any URL.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/app.css">
 </head>
 <body>
-  <div id="app">
-    <h1>LiteCut</h1>
-
-    <!-- 1. Import media -->
-    <section>
-      <h2>1. Import Media</h2>
-      <input type="file" id="file-input" accept="video/*,audio/*" multiple>
-      <div id="media-list"></div>
-      <div id="media-empty" class="empty-state">
-        <div class="empty-state-text">Import video or audio files to get started</div>
-      </div>
-    </section>
-
-    <!-- 2. Preview with NATIVE controls -->
-    <section>
-      <h2>2. Preview</h2>
-      <div id="preview-container">
-        <video id="preview" controls></video>
-        <div id="preview-empty" class="empty-state preview-empty">
-          <div class="empty-state-text">Import media to preview</div>
-        </div>
-      </div>
-      <div id="time-display">0:00 / 0:00</div>
-    </section>
-
-    <!-- 3. Timeline -->
-    <section>
-      <h2>3. Timeline (drag media here)</h2>
-      <div class="toolbar">
-        <button id="btn-split" disabled>Split<span class="shortcut">S</span></button>
-        <button id="btn-delete" disabled>Delete<span class="shortcut">Del</span></button>
-      </div>
-      <div id="timeline">
-        <div id="ruler"></div>
-        <div class="track" id="video-track" data-type="video">
-          <span class="track-label">Video</span>
-          <span class="track-hint" id="video-hint">← Drag video clips here</span>
-        </div>
-        <div class="track" id="audio-track" data-type="audio">
-          <span class="track-label">Audio</span>
-          <span class="track-hint" id="audio-hint">← Drag audio clips here</span>
-        </div>
-        <div id="playhead" style="left: 10px;"></div>
-      </div>
-    </section>
-
-    <!-- 4. Project -->
-    <section>
-      <h2>4. Project</h2>
-      <div class="project-header">
-        <span id="project-name" class="project-name">Untitled Project</span>
-        <button id="btn-rename" class="btn-small">Rename</button>
-      </div>
-      <div class="project-actions">
-        <button id="btn-new">+ New</button>
-        <button id="btn-save">Save</button>
-        <div class="dropdown">
-          <button id="btn-load">Open</button>
-          <div id="project-list" class="dropdown-content"></div>
-        </div>
-        <button id="btn-export" onclick="alert('Export coming soon!')">Export</button>
-      </div>
-      <div id="save-status" style="margin-top: 10px; font-size: 12px; color: #888;"></div>
-    </section>
+<header class="bar">
+  <div class="brand"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 5h16v14H4z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 9l6 3-6 3z" fill="currentColor"/></svg> LiteCut <span class="ver" id="ver"></span></div>
+  <div class="title" id="title">No project</div>
+  <nav class="actions">
+    <button id="b-library" title="Library">Library</button>
+    <button id="b-open" title="Open a timeline URL">Open URL</button>
+    <label class="btn" title="Open a .otio / .jsonld / .json file">File<input type="file" id="f-open" accept=".otio,.json,.jsonld,application/json" hidden></label>
+    <button id="b-undo" title="Undo (Ctrl+Z)">Undo</button>
+    <button id="b-save" title="Save in this browser (Ctrl+S)">Save</button>
+    <button id="b-download" title="Download the timeline">Download</button>
+    <button id="b-put" title="Save back to its URL (a Solid pod)">Save to pod</button>
+  </nav>
+</header>
+<main class="stage">
+  <aside class="library" id="library" hidden>
+    <div class="lib-head"><input id="lib-filter" placeholder="Filter" aria-label="Filter the library"><span id="lib-count"></span></div>
+    <ul id="lib-list"></ul>
+  </aside>
+  <section class="viewer">
+    <video id="video" playsinline preload="metadata"></video>
+    <div class="transport"><button id="b-play" aria-label="Play">Play</button><span id="time">0:00.0 / 0:00.0</span><span id="status" role="status"></span></div>
+  </section>
+  <aside class="inspector" id="inspector"><p class="hint">Select a clip to see its prompt, direction and credits.</p></aside>
+</main>
+<section class="timeline" id="timeline" tabindex="0" aria-label="Timeline">
+  <div class="tl-tools"><label>Zoom <input type="range" id="zoom" min="0.2" max="12" step="0.1" value="1"></label>
+    <span class="keys">Space play · S split · Del delete · drag to move · drag edges to trim · Ctrl+Z undo</span></div>
+  <div class="tl-body" id="tl-body">
+    <div class="heads" id="heads"></div>
+    <div class="scroller" id="scroller"><div class="canvas" id="canvas"><div class="ruler" id="ruler"></div><div class="lanes" id="lanes"></div><div class="playhead" id="playhead"></div></div></div>
   </div>
-
-  <script type="module" src="js/main.js"></script>
+</section>
+<script type="module" src="js/app.js"></script>
 </body>
 </html>

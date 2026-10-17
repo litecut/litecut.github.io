@@ -1,0 +1,3245 @@
+{
+ "@context": "../../context.jsonld",
+ "@id": "#fable/fox-and-stork",
+ "@type": "Movie",
+ "OTIO_SCHEMA": "Timeline.1",
+ "identifier": "fox-and-stork",
+ "name": "The Fox and the Stork",
+ "abstract": "One bad turn deserves another.",
+ "isBasedOn": {
+  "@type": "CreativeWork",
+  "name": "Aesop's Fables",
+  "creditText": "Joseph Jacobs, The Fables of Aesop (1894), public domain"
+ },
+ "character": [
+  {
+   "@id": "../../universe.jsonld#char/narrator"
+  },
+  {
+   "@id": "../../universe.jsonld#char/fox"
+  },
+  {
+   "@id": "../../universe.jsonld#char/stork"
+  }
+ ],
+ "global_start_time": {
+  "OTIO_SCHEMA": "RationalTime.1",
+  "value": 0,
+  "rate": 30
+ },
+ "clockStart": "0:00:00",
+ "isPartOf": {
+  "@id": "../../universe.jsonld#aesop"
+ },
+ "clockEnd": "0:01:25",
+ "video": {
+  "@id": "#fable/fox-and-stork/video",
+  "@type": "VideoObject",
+  "contentUrl": "fox-and-stork.mp4"
+ },
+ "associatedMedia": {
+  "@id": "#fable/fox-and-stork/video",
+  "@type": "VideoObject",
+  "contentUrl": "fox-and-stork.mp4"
+ },
+ "image": "contact.png",
+ "madeBy": {
+  "script": {
+   "stage": "script",
+   "version": 2,
+   "backend": "session",
+   "model": "claude-opus-5-5 (in session, from the critic notes on the claude_cli first cut)",
+   "temperature": null,
+   "seconds": 0,
+   "prompt_sha1": "",
+   "notes": "critic 44: echo the apology, wet-tip beat, pond on the narrator line, cut napkin, fox walks home",
+   "at": "2026-10-10 20:22"
+  },
+  "shots": {
+   "stage": "shots",
+   "version": 2,
+   "backend": "session",
+   "model": "claude-opus-5-5 (in session, from the critic notes on the claude_cli first cut)",
+   "temperature": null,
+   "seconds": 0,
+   "prompt_sha1": "",
+   "notes": "critic 44: echo the apology, wet-tip beat, pond on the narrator line, cut napkin, fox walks home",
+   "at": "2026-10-10 20:22"
+  },
+  "treatment": {
+   "stage": "treatment",
+   "version": 1,
+   "backend": "claude_cli",
+   "model": "opus",
+   "temperature": 0.8,
+   "seconds": 13.4,
+   "prompt_sha1": "7a74341768a0",
+   "notes": null,
+   "at": "2026-10-10 19:01"
+  }
+ },
+ "actor": [
+  {
+   "@id": "#fable/fox-and-stork/voice/narrator",
+   "@type": "Person",
+   "name": "Warm Storyteller",
+   "identifier": "5c8dc6a69c0b4edfb32634db6384bf34",
+   "engine": {
+    "@type": "SoftwareApplication",
+    "name": "Fish Audio Drama 3",
+    "identifier": "fish-audio/drama-3",
+    "url": "https://fish.audio/drama-3/",
+    "provider": {
+     "@type": "Organization",
+     "name": "OpenRouter",
+     "url": "https://openrouter.ai/fish-audio/drama-3"
+    }
+   },
+   "settings": {
+    "engine": "drama3",
+    "voice": "5c8dc6a69c0b4edfb32634db6384bf34",
+    "voice_name": "Warm Storyteller",
+    "speed": 1.15,
+    "max_pause": 0.35,
+    "gain": 1.25
+   },
+   "description": "Warm, dry storyteller, calm and measured, a smile behind the voice",
+   "performerIn": {
+    "@id": "#fable/fox-and-stork"
+   },
+   "character": {
+    "@id": "../../universe.jsonld#char/narrator"
+   }
+  },
+  {
+   "@id": "#fable/fox-and-stork/voice/fox",
+   "@type": "Person",
+   "name": "Velvet Gentleman",
+   "identifier": "5fa964aad1e6402a85bcac1a40a9f76c",
+   "engine": {
+    "@type": "SoftwareApplication",
+    "name": "Fish Audio Drama 3",
+    "identifier": "fish-audio/drama-3",
+    "url": "https://fish.audio/drama-3/",
+    "provider": {
+     "@type": "Organization",
+     "name": "OpenRouter",
+     "url": "https://openrouter.ai/fish-audio/drama-3"
+    }
+   },
+   "settings": {
+    "engine": "drama3",
+    "voice": "5fa964aad1e6402a85bcac1a40a9f76c",
+    "voice_name": "Velvet Gentleman",
+    "speed": 1.1,
+    "max_pause": 0.35
+   },
+   "description": "The fox: oily, over-polite host, enjoying his little joke; fake sympathy; at the stork's house eager, then caught out",
+   "performerIn": {
+    "@id": "#fable/fox-and-stork"
+   },
+   "character": {
+    "@id": "../../universe.jsonld#char/fox"
+   }
+  },
+  {
+   "@id": "#fable/fox-and-stork/voice/stork",
+   "@type": "Person",
+   "name": "Velvet Whisper",
+   "identifier": "90ef5ac8d8fd470694ddcc06350c16dc",
+   "engine": {
+    "@type": "SoftwareApplication",
+    "name": "Fish Audio Drama 3",
+    "identifier": "fish-audio/drama-3",
+    "url": "https://fish.audio/drama-3/",
+    "provider": {
+     "@type": "Organization",
+     "name": "OpenRouter",
+     "url": "https://openrouter.ai/fish-audio/drama-3"
+    }
+   },
+   "settings": {
+    "engine": "drama3",
+    "voice": "90ef5ac8d8fd470694ddcc06350c16dc",
+    "voice_name": "Velvet Whisper",
+    "speed": 1.05,
+    "max_pause": 0.4
+   },
+   "description": "The stork: elegant, gracious and composed; polite on the surface, a cool sweetness when she returns the joke",
+   "performerIn": {
+    "@id": "#fable/fox-and-stork"
+   },
+   "character": {
+    "@id": "../../universe.jsonld#char/stork"
+   }
+  }
+ ],
+ "tracks": {
+  "OTIO_SCHEMA": "Stack.1",
+  "@id": "#fable/fox-and-stork/tracks",
+  "name": "tracks",
+  "children": [
+   {
+    "OTIO_SCHEMA": "Track.1",
+    "@id": "#fable/fox-and-stork/track/picture",
+    "name": "Picture",
+    "kind": "Video",
+    "children": [
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/act",
+      "@type": "Clip",
+      "name": "The Fox and the Stork",
+      "markers": [
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/beat/title",
+        "@type": "day10:Beat",
+        "name": "title",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 0,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 75,
+          "rate": 30
+         }
+        },
+        "color": "YELLOW"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/beat/B1_establish",
+        "@type": "day10:Beat",
+        "name": "establish",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 275,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 45,
+          "rate": 30
+         }
+        },
+        "color": "YELLOW"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/beat/B2_pause",
+        "@type": "day10:Beat",
+        "name": "pause",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 784,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 24,
+          "rate": 30
+         }
+        },
+        "color": "YELLOW"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/beat/B3_fox_serves",
+        "@type": "day10:Beat",
+        "name": "fox_serves",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 926,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 180,
+          "rate": 30
+         }
+        },
+        "color": "YELLOW"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/beat/B4_pause",
+        "@type": "day10:Beat",
+        "name": "pause",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 1643,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 24,
+          "rate": 30
+         }
+        },
+        "color": "YELLOW"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/beat/B5_stork_serves",
+        "@type": "day10:Beat",
+        "name": "stork_serves",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 1875,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 221,
+          "rate": 30
+         }
+        },
+        "color": "YELLOW"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/beat/B6_pause",
+        "@type": "day10:Beat",
+        "name": "pause",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 2254,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 78,
+          "rate": 30
+         }
+        },
+        "color": "YELLOW"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/beat/end",
+        "@type": "day10:Beat",
+        "name": "end",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 2500,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 60,
+          "rate": 30
+         }
+        },
+        "color": "YELLOW"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/sfx/1",
+        "@type": "day10:SoundEffect",
+        "name": "file:dog-walk-soft",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 1687,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 0,
+          "rate": 30
+         }
+        },
+        "color": "ORANGE",
+        "creator": {
+         "@type": "Person",
+         "name": "Wdomino",
+         "url": "https://freesound.org/people/Wdomino/"
+        },
+        "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "isBasedOn": {
+         "@type": "AudioObject",
+         "name": "Freesound - Dog_Walk.wav by Wdomino",
+         "url": "https://freesound.org/s/517130/",
+         "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+        },
+        "description": "CC0 recording 'Freesound - Dog_Walk.wav by Wdomino' by Wdomino on Freesound"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/sfx/2",
+        "@type": "day10:SoundEffect",
+        "name": "file:dog-walk-soft",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 1737,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 0,
+          "rate": 30
+         }
+        },
+        "color": "ORANGE",
+        "creator": {
+         "@type": "Person",
+         "name": "Wdomino",
+         "url": "https://freesound.org/people/Wdomino/"
+        },
+        "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "isBasedOn": {
+         "@type": "AudioObject",
+         "name": "Freesound - Dog_Walk.wav by Wdomino",
+         "url": "https://freesound.org/s/517130/",
+         "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+        },
+        "description": "CC0 recording 'Freesound - Dog_Walk.wav by Wdomino' by Wdomino on Freesound"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/sfx/3",
+        "@type": "day10:SoundEffect",
+        "name": "file:dog-walk-soft",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 2342,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 0,
+          "rate": 30
+         }
+        },
+        "color": "ORANGE",
+        "creator": {
+         "@type": "Person",
+         "name": "Wdomino",
+         "url": "https://freesound.org/people/Wdomino/"
+        },
+        "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "isBasedOn": {
+         "@type": "AudioObject",
+         "name": "Freesound - Dog_Walk.wav by Wdomino",
+         "url": "https://freesound.org/s/517130/",
+         "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+        },
+        "description": "CC0 recording 'Freesound - Dog_Walk.wav by Wdomino' by Wdomino on Freesound"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/sfx/4",
+        "@type": "day10:SoundEffect",
+        "name": "file:dog-walk-soft",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 2377,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 0,
+          "rate": 30
+         }
+        },
+        "color": "ORANGE",
+        "creator": {
+         "@type": "Person",
+         "name": "Wdomino",
+         "url": "https://freesound.org/people/Wdomino/"
+        },
+        "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "isBasedOn": {
+         "@type": "AudioObject",
+         "name": "Freesound - Dog_Walk.wav by Wdomino",
+         "url": "https://freesound.org/s/517130/",
+         "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+        },
+        "description": "CC0 recording 'Freesound - Dog_Walk.wav by Wdomino' by Wdomino on Freesound"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/sfx/5",
+        "@type": "day10:SoundEffect",
+        "name": "file:coin-clink",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 935,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 0,
+          "rate": 30
+         }
+        },
+        "color": "ORANGE",
+        "creator": {
+         "@type": "Person",
+         "name": "AardsReal",
+         "url": "https://freesound.org/people/AardsReal/"
+        },
+        "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "isBasedOn": {
+         "@type": "AudioObject",
+         "name": "Freesound - Coin Clink Free by AardsReal",
+         "url": "https://freesound.org/s/842172/",
+         "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+        },
+        "description": "CC0 recording 'Freesound - Coin Clink Free by AardsReal' by AardsReal on Freesound"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/sfx/6",
+        "@type": "day10:SoundEffect",
+        "name": "file:coin-clink",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 953,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 0,
+          "rate": 30
+         }
+        },
+        "color": "ORANGE",
+        "creator": {
+         "@type": "Person",
+         "name": "AardsReal",
+         "url": "https://freesound.org/people/AardsReal/"
+        },
+        "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "isBasedOn": {
+         "@type": "AudioObject",
+         "name": "Freesound - Coin Clink Free by AardsReal",
+         "url": "https://freesound.org/s/842172/",
+         "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+        },
+        "description": "CC0 recording 'Freesound - Coin Clink Free by AardsReal' by AardsReal on Freesound"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/sfx/7",
+        "@type": "day10:SoundEffect",
+        "name": "file:lapping",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 971,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 0,
+          "rate": 30
+         }
+        },
+        "color": "ORANGE",
+        "creator": {
+         "@type": "Person",
+         "name": "RCSound99",
+         "url": "https://freesound.org/people/RCSound99/"
+        },
+        "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "isBasedOn": {
+         "@type": "AudioObject",
+         "name": "Freesound - Dog drinking water by RCSound99",
+         "url": "https://freesound.org/s/654042/",
+         "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+        },
+        "description": "CC0 recording 'Freesound - Dog drinking water by RCSound99' by RCSound99 on Freesound"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/sfx/8",
+        "@type": "day10:SoundEffect",
+        "name": "file:plate-scrape",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 1004,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 0,
+          "rate": 30
+         }
+        },
+        "color": "ORANGE",
+        "creator": {
+         "@type": "Person",
+         "name": "bilal.techie",
+         "url": "https://freesound.org/people/bilal.techie/"
+        },
+        "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "isBasedOn": {
+         "@type": "AudioObject",
+         "name": "Freesound - Ceramic Plate and Spoon Scratching While Eating by bilal.techie",
+         "url": "https://freesound.org/s/799630/",
+         "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+        },
+        "description": "CC0 recording 'Freesound - Ceramic Plate and Spoon Scratching While Eating by bilal.techie' by bilal.techie on Freesound"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/sfx/9",
+        "@type": "day10:SoundEffect",
+        "name": "file:plate-scrape",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 1058,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 0,
+          "rate": 30
+         }
+        },
+        "color": "ORANGE",
+        "creator": {
+         "@type": "Person",
+         "name": "bilal.techie",
+         "url": "https://freesound.org/people/bilal.techie/"
+        },
+        "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "isBasedOn": {
+         "@type": "AudioObject",
+         "name": "Freesound - Ceramic Plate and Spoon Scratching While Eating by bilal.techie",
+         "url": "https://freesound.org/s/799630/",
+         "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+        },
+        "description": "CC0 recording 'Freesound - Ceramic Plate and Spoon Scratching While Eating by bilal.techie' by bilal.techie on Freesound"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/sfx/10",
+        "@type": "day10:SoundEffect",
+        "name": "file:bubbles",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 1914,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 0,
+          "rate": 30
+         }
+        },
+        "color": "ORANGE",
+        "creator": {
+         "@type": "Person",
+         "name": "hotpin7",
+         "url": "https://freesound.org/people/hotpin7/"
+        },
+        "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "isBasedOn": {
+         "@type": "AudioObject",
+         "name": "Freesound - Bubbles by hotpin7",
+         "url": "https://freesound.org/s/840042/",
+         "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+        },
+        "description": "CC0 recording 'Freesound - Bubbles by hotpin7' by hotpin7 on Freesound"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/sfx/11",
+        "@type": "day10:SoundEffect",
+        "name": "file:plop",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 1917,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 0,
+          "rate": 30
+         }
+        },
+        "color": "ORANGE",
+        "creator": {
+         "@type": "Person",
+         "name": "jc144940",
+         "url": "https://freesound.org/people/jc144940/"
+        },
+        "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "isBasedOn": {
+         "@type": "AudioObject",
+         "name": "Freesound - Rock In Water Splash-Plop 3.aif by jc144940",
+         "url": "https://freesound.org/s/178732/",
+         "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+        },
+        "description": "CC0 recording 'Freesound - Rock In Water Splash-Plop 3.aif by jc144940' by jc144940 on Freesound"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/sfx/12",
+        "@type": "day10:SoundEffect",
+        "name": "file:plop",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 1947,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 0,
+          "rate": 30
+         }
+        },
+        "color": "ORANGE",
+        "creator": {
+         "@type": "Person",
+         "name": "jc144940",
+         "url": "https://freesound.org/people/jc144940/"
+        },
+        "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "isBasedOn": {
+         "@type": "AudioObject",
+         "name": "Freesound - Rock In Water Splash-Plop 3.aif by jc144940",
+         "url": "https://freesound.org/s/178732/",
+         "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+        },
+        "description": "CC0 recording 'Freesound - Rock In Water Splash-Plop 3.aif by jc144940' by jc144940 on Freesound"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/sfx/13",
+        "@type": "day10:SoundEffect",
+        "name": "file:door-knock",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 1974,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 0,
+          "rate": 30
+         }
+        },
+        "color": "ORANGE",
+        "creator": {
+         "@type": "Person",
+         "name": "aoimotion",
+         "url": "https://freesound.org/people/aoimotion/"
+        },
+        "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "isBasedOn": {
+         "@type": "AudioObject",
+         "name": "Freesound - Toc toc (knocking on wooden door) by aoimotion",
+         "url": "https://freesound.org/s/728289/",
+         "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+        },
+        "description": "CC0 recording 'Freesound - Toc toc (knocking on wooden door) by aoimotion' by aoimotion on Freesound"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/sfx/14",
+        "@type": "day10:SoundEffect",
+        "name": "file:plate-scrape",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 1995,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 0,
+          "rate": 30
+         }
+        },
+        "color": "ORANGE",
+        "creator": {
+         "@type": "Person",
+         "name": "bilal.techie",
+         "url": "https://freesound.org/people/bilal.techie/"
+        },
+        "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "isBasedOn": {
+         "@type": "AudioObject",
+         "name": "Freesound - Ceramic Plate and Spoon Scratching While Eating by bilal.techie",
+         "url": "https://freesound.org/s/799630/",
+         "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+        },
+        "description": "CC0 recording 'Freesound - Ceramic Plate and Spoon Scratching While Eating by bilal.techie' by bilal.techie on Freesound"
+       },
+       {
+        "OTIO_SCHEMA": "Marker.2",
+        "@id": "#fable/fox-and-stork/sfx/15",
+        "@type": "day10:SoundEffect",
+        "name": "file:steps-earth",
+        "marked_range": {
+         "OTIO_SCHEMA": "TimeRange.1",
+         "start_time": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 2034,
+          "rate": 30
+         },
+         "duration": {
+          "OTIO_SCHEMA": "RationalTime.1",
+          "value": 0,
+          "rate": 30
+         }
+        },
+        "color": "ORANGE",
+        "creator": {
+         "@type": "Person",
+         "name": "BenDrain",
+         "url": "https://freesound.org/people/BenDrain/"
+        },
+        "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "isBasedOn": {
+         "@type": "AudioObject",
+         "name": "Freesound - Footsteps_Mud_Single_03.wav by BenDrain",
+         "url": "https://freesound.org/s/488082/",
+         "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+        },
+        "description": "CC0 recording 'Freesound - Footsteps_Mud_Single_03.wav by BenDrain' by BenDrain on Freesound"
+       }
+      ],
+      "scoreStyle": {},
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 2566,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     }
+    ]
+   },
+   {
+    "OTIO_SCHEMA": "Track.1",
+    "@id": "#fable/fox-and-stork/track/shots",
+    "name": "Shots",
+    "kind": "Video",
+    "children": [
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/shot/1",
+      "name": "title",
+      "location": null,
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 81,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/shot/2",
+      "name": "wide",
+      "location": "meadow",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 81,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 190,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/shot/3",
+      "name": "wide",
+      "location": "meadow",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 271,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 55,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/shot/4",
+      "name": "fox",
+      "location": "meadow",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 326,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 90,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/shot/5",
+      "name": "fox",
+      "location": "meadow",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 416,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 244,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/shot/6",
+      "name": "stork",
+      "location": "meadow",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 660,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 120,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/shot/7",
+      "name": "two",
+      "location": "meadow",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 780,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 34,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/shot/8",
+      "name": "fox",
+      "location": "meadow",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 814,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 108,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/shot/9",
+      "name": "dishes",
+      "location": "meadow",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 922,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 190,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/shot/10",
+      "name": "dishes",
+      "location": "meadow",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1112,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 202,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/shot/11",
+      "name": "fox",
+      "location": "meadow",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1314,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 169,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/shot/12",
+      "name": "stork",
+      "location": "meadow",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1483,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 156,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/shot/13",
+      "name": "two",
+      "location": "meadow",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1639,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 34,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/shot/14",
+      "name": "wide",
+      "location": "meadow",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1673,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 124,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/shot/15",
+      "name": "fox",
+      "location": "meadow",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1797,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 74,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/shot/16",
+      "name": "wide",
+      "location": "meadow",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1871,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 231,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/shot/17",
+      "name": "stork",
+      "location": "meadow",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 2102,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 148,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/shot/18",
+      "name": "fox",
+      "location": "meadow",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 2250,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 88,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/shot/19",
+      "name": "wide",
+      "location": "meadow",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 2338,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 92,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/shot/20",
+      "name": "moral",
+      "location": "meadow",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 2430,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 136,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     }
+    ]
+   },
+   {
+    "OTIO_SCHEMA": "Track.1",
+    "@id": "#fable/fox-and-stork/track/dialogue",
+    "name": "Dialogue",
+    "kind": "Audio",
+    "children": [
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 85,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/line/L1",
+      "@type": "Quotation",
+      "name": "L1",
+      "text": "The Fox and the Stork were always calling on one another. To anyone watching, they were the very best of friends.",
+      "spokenByCharacter": {
+       "@id": "../../universe.jsonld#char/narrator"
+      },
+      "actor": {
+       "@id": "#fable/fox-and-stork/voice/narrator"
+      },
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 85,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 180,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 65,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/line/L2",
+      "@type": "Quotation",
+      "name": "L2",
+      "text": "Though one of them did bow just a little too low.",
+      "spokenByCharacter": {
+       "@id": "../../universe.jsonld#char/narrator"
+      },
+      "actor": {
+       "@id": "#fable/fox-and-stork/voice/narrator"
+      },
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 330,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 80,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 10,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/line/L3",
+      "@type": "Quotation",
+      "name": "L3",
+      "text": "My dear Stork, you must dine with me tomorrow. I've made a soup you won't soon forget.",
+      "spokenByCharacter": {
+       "@id": "../../universe.jsonld#char/fox"
+      },
+      "actor": {
+       "@id": "#fable/fox-and-stork/voice/fox"
+      },
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 420,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 234,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 10,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/line/L4",
+      "@type": "Quotation",
+      "name": "L4",
+      "text": "How very kind. I shall come with an appetite.",
+      "spokenByCharacter": {
+       "@id": "../../universe.jsonld#char/stork"
+      },
+      "actor": {
+       "@id": "#fable/fox-and-stork/voice/stork"
+      },
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 664,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 110,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 44,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/line/L5",
+      "@type": "Quotation",
+      "name": "L5",
+      "text": "Do sit down. I've laid the table myself.",
+      "spokenByCharacter": {
+       "@id": "../../universe.jsonld#char/fox"
+      },
+      "actor": {
+       "@id": "#fable/fox-and-stork/voice/fox"
+      },
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 818,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 98,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 200,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/line/L6",
+      "@type": "Quotation",
+      "name": "L6",
+      "text": "But the soup was served in flat plates. The Fox lapped his clean. The Stork could only wet the tip of her beak.",
+      "spokenByCharacter": {
+       "@id": "../../universe.jsonld#char/narrator"
+      },
+      "actor": {
+       "@id": "#fable/fox-and-stork/voice/narrator"
+      },
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1116,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 192,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 10,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/line/L7",
+      "@type": "Quotation",
+      "name": "L7",
+      "text": "Oh, dear me. I'm so sorry the soup isn't to your taste.",
+      "spokenByCharacter": {
+       "@id": "../../universe.jsonld#char/fox"
+      },
+      "actor": {
+       "@id": "#fable/fox-and-stork/voice/fox"
+      },
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1318,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 159,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 10,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/line/L8",
+      "@type": "Quotation",
+      "name": "L8",
+      "text": "Please, don't apologise. You must come and dine with me soon.",
+      "spokenByCharacter": {
+       "@id": "../../universe.jsonld#char/stork"
+      },
+      "actor": {
+       "@id": "#fable/fox-and-stork/voice/stork"
+      },
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1487,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 146,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 44,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/line/L9",
+      "@type": "Quotation",
+      "name": "L9",
+      "text": "So on the agreed day, the Fox went down to the Stork's house among the reeds.",
+      "spokenByCharacter": {
+       "@id": "../../universe.jsonld#char/narrator"
+      },
+      "actor": {
+       "@id": "#fable/fox-and-stork/voice/narrator"
+      },
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1677,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 114,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 10,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/line/L10",
+      "@type": "Quotation",
+      "name": "L10",
+      "text": "What a heavenly smell!",
+      "spokenByCharacter": {
+       "@id": "../../universe.jsonld#char/fox"
+      },
+      "actor": {
+       "@id": "#fable/fox-and-stork/voice/fox"
+      },
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1801,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 64,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 241,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/line/L11",
+      "@type": "Quotation",
+      "name": "L11",
+      "text": "Oh, dear me. I'm so sorry the dinner isn't to your taste.",
+      "spokenByCharacter": {
+       "@id": "../../universe.jsonld#char/stork"
+      },
+      "actor": {
+       "@id": "#fable/fox-and-stork/voice/stork"
+      },
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 2106,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 138,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 98,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/line/L12",
+      "@type": "Quotation",
+      "name": "L12",
+      "text": "And the Fox went home as hungry as the Stork had.",
+      "spokenByCharacter": {
+       "@id": "../../universe.jsonld#char/narrator"
+      },
+      "actor": {
+       "@id": "#fable/fox-and-stork/voice/narrator"
+      },
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 2342,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 82,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 10,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/line/L13",
+      "@type": "Quotation",
+      "name": "L13",
+      "text": "One bad turn deserves another.",
+      "spokenByCharacter": {
+       "@id": "../../universe.jsonld#char/narrator"
+      },
+      "actor": {
+       "@id": "#fable/fox-and-stork/voice/narrator"
+      },
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 2434,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 56,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     }
+    ]
+   },
+   {
+    "OTIO_SCHEMA": "Track.1",
+    "@id": "#fable/fox-and-stork/track/score",
+    "name": "Score",
+    "kind": "Audio",
+    "children": [
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/score/1",
+      "name": "storybook folk score in G major (score_folk.py)",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 2566,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     }
+    ]
+   },
+   {
+    "OTIO_SCHEMA": "Track.1",
+    "@id": "#fable/fox-and-stork/track/ambience",
+    "name": "Ambience",
+    "kind": "Audio",
+    "children": [
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 81,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/ambience/1",
+      "name": "meadow bed",
+      "creator": {
+       "@type": "SoftwareApplication",
+       "name": "",
+       "identifier": "",
+       "provider": {
+        "@type": "Organization",
+        "name": "OpenRouter",
+        "url": "https://openrouter.ai/"
+       }
+      },
+      "isBasedOn": {
+       "@type": "CreativeWork",
+       "name": "prompt",
+       "text": ""
+      },
+      "description": "bought once, seed , first 30 s looped",
+      "dateCreated": "",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 81,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1716,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/ambience/2",
+      "name": "river bed",
+      "creator": {
+       "@type": "SoftwareApplication",
+       "name": "",
+       "identifier": "",
+       "provider": {
+        "@type": "Organization",
+        "name": "OpenRouter",
+        "url": "https://openrouter.ai/"
+       }
+      },
+      "isBasedOn": {
+       "@type": "CreativeWork",
+       "name": "prompt",
+       "text": ""
+      },
+      "description": "bought once, seed , first 30 s looped",
+      "dateCreated": "",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1797,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 769,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "fox-and-stork.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     }
+    ]
+   },
+   {
+    "OTIO_SCHEMA": "Track.1",
+    "@id": "#fable/fox-and-stork/track/effects",
+    "name": "Effects",
+    "kind": "Audio",
+    "children": [
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1687,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/sfx/1",
+      "@type": "day10:SoundEffect",
+      "name": "dog-walk-soft",
+      "anchor": "line:L9+10",
+      "gain": 0.1,
+      "kind": "file:dog-walk-soft",
+      "creator": {
+       "@type": "Person",
+       "name": "Wdomino",
+       "url": "https://freesound.org/people/Wdomino/"
+      },
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "isBasedOn": {
+       "@type": "AudioObject",
+       "name": "Freesound - Dog_Walk.wav by Wdomino",
+       "url": "https://freesound.org/s/517130/",
+       "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      "description": "CC0 recording 'Freesound - Dog_Walk.wav by Wdomino' by Wdomino on Freesound",
+      "contentUrl": "../../audio/sfx/dog-walk-soft.wav",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1687,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 42,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "../../audio/sfx/dog-walk-soft.wav"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 8,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/sfx/2",
+      "@type": "day10:SoundEffect",
+      "name": "dog-walk-soft",
+      "anchor": "line:L9+60",
+      "gain": 0.1,
+      "kind": "file:dog-walk-soft",
+      "creator": {
+       "@type": "Person",
+       "name": "Wdomino",
+       "url": "https://freesound.org/people/Wdomino/"
+      },
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "isBasedOn": {
+       "@type": "AudioObject",
+       "name": "Freesound - Dog_Walk.wav by Wdomino",
+       "url": "https://freesound.org/s/517130/",
+       "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      "description": "CC0 recording 'Freesound - Dog_Walk.wav by Wdomino' by Wdomino on Freesound",
+      "contentUrl": "../../audio/sfx/dog-walk-soft.wav",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1737,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 42,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "../../audio/sfx/dog-walk-soft.wav"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 563,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/sfx/3",
+      "@type": "day10:SoundEffect",
+      "name": "dog-walk-soft",
+      "anchor": "line:L12",
+      "gain": 0.1,
+      "kind": "file:dog-walk-soft",
+      "creator": {
+       "@type": "Person",
+       "name": "Wdomino",
+       "url": "https://freesound.org/people/Wdomino/"
+      },
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "isBasedOn": {
+       "@type": "AudioObject",
+       "name": "Freesound - Dog_Walk.wav by Wdomino",
+       "url": "https://freesound.org/s/517130/",
+       "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      "description": "CC0 recording 'Freesound - Dog_Walk.wav by Wdomino' by Wdomino on Freesound",
+      "contentUrl": "../../audio/sfx/dog-walk-soft.wav",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 2342,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 42,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "../../audio/sfx/dog-walk-soft.wav"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     }
+    ]
+   },
+   {
+    "OTIO_SCHEMA": "Track.1",
+    "@id": "#fable/fox-and-stork/track/effects 2",
+    "name": "Effects 2",
+    "kind": "Audio",
+    "children": [
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 2377,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/sfx/4",
+      "@type": "day10:SoundEffect",
+      "name": "dog-walk-soft",
+      "anchor": "line:L12+35",
+      "gain": 0.08,
+      "kind": "file:dog-walk-soft",
+      "creator": {
+       "@type": "Person",
+       "name": "Wdomino",
+       "url": "https://freesound.org/people/Wdomino/"
+      },
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "isBasedOn": {
+       "@type": "AudioObject",
+       "name": "Freesound - Dog_Walk.wav by Wdomino",
+       "url": "https://freesound.org/s/517130/",
+       "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      "description": "CC0 recording 'Freesound - Dog_Walk.wav by Wdomino' by Wdomino on Freesound",
+      "contentUrl": "../../audio/sfx/dog-walk-soft.wav",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 2377,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 42,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "../../audio/sfx/dog-walk-soft.wav"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     }
+    ]
+   },
+   {
+    "OTIO_SCHEMA": "Track.1",
+    "@id": "#fable/fox-and-stork/track/effects 3",
+    "name": "Effects 3",
+    "kind": "Audio",
+    "children": [
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 935,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/sfx/5",
+      "@type": "day10:SoundEffect",
+      "name": "coin-clink",
+      "anchor": "beat:B3_fox_serves+9",
+      "gain": 0.2,
+      "kind": "file:coin-clink",
+      "creator": {
+       "@type": "Person",
+       "name": "AardsReal",
+       "url": "https://freesound.org/people/AardsReal/"
+      },
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "isBasedOn": {
+       "@type": "AudioObject",
+       "name": "Freesound - Coin Clink Free by AardsReal",
+       "url": "https://freesound.org/s/842172/",
+       "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      "description": "CC0 recording 'Freesound - Coin Clink Free by AardsReal' by AardsReal on Freesound",
+      "contentUrl": "../../audio/sfx/coin-clink.wav",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 935,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 9,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "../../audio/sfx/coin-clink.wav"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 9,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/sfx/6",
+      "@type": "day10:SoundEffect",
+      "name": "coin-clink",
+      "anchor": "beat:B3_fox_serves+27",
+      "gain": 0.15,
+      "kind": "file:coin-clink",
+      "creator": {
+       "@type": "Person",
+       "name": "AardsReal",
+       "url": "https://freesound.org/people/AardsReal/"
+      },
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "isBasedOn": {
+       "@type": "AudioObject",
+       "name": "Freesound - Coin Clink Free by AardsReal",
+       "url": "https://freesound.org/s/842172/",
+       "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      "description": "CC0 recording 'Freesound - Coin Clink Free by AardsReal' by AardsReal on Freesound",
+      "contentUrl": "../../audio/sfx/coin-clink.wav",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 953,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 9,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "../../audio/sfx/coin-clink.wav"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 9,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/sfx/7",
+      "@type": "day10:SoundEffect",
+      "name": "lapping",
+      "anchor": "beat:B3_fox_serves+45",
+      "gain": 0.5,
+      "kind": "file:lapping",
+      "creator": {
+       "@type": "Person",
+       "name": "RCSound99",
+       "url": "https://freesound.org/people/RCSound99/"
+      },
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "isBasedOn": {
+       "@type": "AudioObject",
+       "name": "Freesound - Dog drinking water by RCSound99",
+       "url": "https://freesound.org/s/654042/",
+       "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      "description": "CC0 recording 'Freesound - Dog drinking water by RCSound99' by RCSound99 on Freesound",
+      "contentUrl": "../../audio/sfx/lapping.wav",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 971,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 75,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "../../audio/sfx/lapping.wav"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 12,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/sfx/9",
+      "@type": "day10:SoundEffect",
+      "name": "plate-scrape",
+      "anchor": "beat:B3_fox_serves+132",
+      "gain": 0.2,
+      "kind": "file:plate-scrape",
+      "creator": {
+       "@type": "Person",
+       "name": "bilal.techie",
+       "url": "https://freesound.org/people/bilal.techie/"
+      },
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "isBasedOn": {
+       "@type": "AudioObject",
+       "name": "Freesound - Ceramic Plate and Spoon Scratching While Eating by bilal.techie",
+       "url": "https://freesound.org/s/799630/",
+       "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      "description": "CC0 recording 'Freesound - Ceramic Plate and Spoon Scratching While Eating by bilal.techie' by bilal.techie on Freesound",
+      "contentUrl": "../../audio/sfx/plate-scrape.wav",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1058,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 60,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "../../audio/sfx/plate-scrape.wav"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 796,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/sfx/10",
+      "@type": "day10:SoundEffect",
+      "name": "bubbles",
+      "anchor": "beat:B5_stork_serves+39",
+      "gain": 0.12,
+      "kind": "file:bubbles",
+      "creator": {
+       "@type": "Person",
+       "name": "hotpin7",
+       "url": "https://freesound.org/people/hotpin7/"
+      },
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "isBasedOn": {
+       "@type": "AudioObject",
+       "name": "Freesound - Bubbles by hotpin7",
+       "url": "https://freesound.org/s/840042/",
+       "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      "description": "CC0 recording 'Freesound - Bubbles by hotpin7' by hotpin7 on Freesound",
+      "contentUrl": "../../audio/sfx/bubbles.wav",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1914,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 34,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "../../audio/sfx/bubbles.wav"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 26,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/sfx/13",
+      "@type": "day10:SoundEffect",
+      "name": "door-knock",
+      "anchor": "beat:B5_stork_serves+99",
+      "gain": 0.12,
+      "kind": "file:door-knock",
+      "creator": {
+       "@type": "Person",
+       "name": "aoimotion",
+       "url": "https://freesound.org/people/aoimotion/"
+      },
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "isBasedOn": {
+       "@type": "AudioObject",
+       "name": "Freesound - Toc toc (knocking on wooden door) by aoimotion",
+       "url": "https://freesound.org/s/728289/",
+       "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      "description": "CC0 recording 'Freesound - Toc toc (knocking on wooden door) by aoimotion' by aoimotion on Freesound",
+      "contentUrl": "../../audio/sfx/door-knock.wav",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1974,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 24,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "../../audio/sfx/door-knock.wav"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 36,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/sfx/15",
+      "@type": "day10:SoundEffect",
+      "name": "steps-earth",
+      "anchor": "beat:B5_stork_serves+159",
+      "gain": 0.12,
+      "kind": "file:steps-earth",
+      "creator": {
+       "@type": "Person",
+       "name": "BenDrain",
+       "url": "https://freesound.org/people/BenDrain/"
+      },
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "isBasedOn": {
+       "@type": "AudioObject",
+       "name": "Freesound - Footsteps_Mud_Single_03.wav by BenDrain",
+       "url": "https://freesound.org/s/488082/",
+       "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      "description": "CC0 recording 'Freesound - Footsteps_Mud_Single_03.wav by BenDrain' by BenDrain on Freesound",
+      "contentUrl": "../../audio/sfx/steps-earth.wav",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 2034,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 20,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "../../audio/sfx/steps-earth.wav"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     }
+    ]
+   },
+   {
+    "OTIO_SCHEMA": "Track.1",
+    "@id": "#fable/fox-and-stork/track/effects 4",
+    "name": "Effects 4",
+    "kind": "Audio",
+    "children": [
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1004,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/sfx/8",
+      "@type": "day10:SoundEffect",
+      "name": "plate-scrape",
+      "anchor": "beat:B3_fox_serves+78",
+      "gain": 0.3,
+      "kind": "file:plate-scrape",
+      "creator": {
+       "@type": "Person",
+       "name": "bilal.techie",
+       "url": "https://freesound.org/people/bilal.techie/"
+      },
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "isBasedOn": {
+       "@type": "AudioObject",
+       "name": "Freesound - Ceramic Plate and Spoon Scratching While Eating by bilal.techie",
+       "url": "https://freesound.org/s/799630/",
+       "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      "description": "CC0 recording 'Freesound - Ceramic Plate and Spoon Scratching While Eating by bilal.techie' by bilal.techie on Freesound",
+      "contentUrl": "../../audio/sfx/plate-scrape.wav",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1004,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 60,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "../../audio/sfx/plate-scrape.wav"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 853,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/sfx/11",
+      "@type": "day10:SoundEffect",
+      "name": "plop",
+      "anchor": "beat:B5_stork_serves+42",
+      "gain": 0.3,
+      "kind": "file:plop",
+      "creator": {
+       "@type": "Person",
+       "name": "jc144940",
+       "url": "https://freesound.org/people/jc144940/"
+      },
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "isBasedOn": {
+       "@type": "AudioObject",
+       "name": "Freesound - Rock In Water Splash-Plop 3.aif by jc144940",
+       "url": "https://freesound.org/s/178732/",
+       "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      "description": "CC0 recording 'Freesound - Rock In Water Splash-Plop 3.aif by jc144940' by jc144940 on Freesound",
+      "contentUrl": "../../audio/sfx/plop.wav",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1917,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 45,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "../../audio/sfx/plop.wav"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 33,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/sfx/14",
+      "@type": "day10:SoundEffect",
+      "name": "plate-scrape",
+      "anchor": "beat:B5_stork_serves+120",
+      "gain": 0.12,
+      "kind": "file:plate-scrape",
+      "creator": {
+       "@type": "Person",
+       "name": "bilal.techie",
+       "url": "https://freesound.org/people/bilal.techie/"
+      },
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "isBasedOn": {
+       "@type": "AudioObject",
+       "name": "Freesound - Ceramic Plate and Spoon Scratching While Eating by bilal.techie",
+       "url": "https://freesound.org/s/799630/",
+       "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      "description": "CC0 recording 'Freesound - Ceramic Plate and Spoon Scratching While Eating by bilal.techie' by bilal.techie on Freesound",
+      "contentUrl": "../../audio/sfx/plate-scrape.wav",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1995,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 60,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "../../audio/sfx/plate-scrape.wav"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     }
+    ]
+   },
+   {
+    "OTIO_SCHEMA": "Track.1",
+    "@id": "#fable/fox-and-stork/track/effects 5",
+    "name": "Effects 5",
+    "kind": "Audio",
+    "children": [
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1947,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/sfx/12",
+      "@type": "day10:SoundEffect",
+      "name": "plop",
+      "anchor": "beat:B5_stork_serves+72",
+      "gain": 0.5,
+      "kind": "file:plop",
+      "creator": {
+       "@type": "Person",
+       "name": "jc144940",
+       "url": "https://freesound.org/people/jc144940/"
+      },
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "isBasedOn": {
+       "@type": "AudioObject",
+       "name": "Freesound - Rock In Water Splash-Plop 3.aif by jc144940",
+       "url": "https://freesound.org/s/178732/",
+       "license": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      "description": "CC0 recording 'Freesound - Rock In Water Splash-Plop 3.aif by jc144940' by jc144940 on Freesound",
+      "contentUrl": "../../audio/sfx/plop.wav",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 1947,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 45,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "../../audio/sfx/plop.wav"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     }
+    ]
+   },
+   {
+    "OTIO_SCHEMA": "Track.1",
+    "@id": "#fable/fox-and-stork/track/generated",
+    "name": "Generated",
+    "kind": "Video",
+    "children": [
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 922,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/generated/1",
+      "@type": "VideoObject",
+      "name": "h3-dinners-1.mp4",
+      "startFrame": 922,
+      "description": "the fox's dinner: at a garden table the fox laps soup from a flat plate and licks his lips, while the stork pokes the tip of her long beak at her flat plate",
+      "isBasedOn": {
+       "@id": "#fable/fox-and-stork/generated/1/prompt",
+       "@type": "CreativeWork",
+       "name": "Prompt",
+       "text": "Hand-painted watercolour storybook animation, loose dark-brown ink outlines, paper texture, warm daylight. The fox and the stork exactly as in the reference image. Static side-on camera at table height, medium-wide shot, the action kept in the centre of the frame. No dialogue, no text.\n\n0-7 s, the fox's dinner: a sunny garden with a low wooden table. The fox serves soup in two wide, flat, shallow plates. The fox happily finishes his plate; the stork taps at her flat plate with the tip of her long beak again and again but cannot eat any.\n\n7.5-15 s, the stork's dinner: a reed bed beside a pond. The stork serves dinner in two tall clay jars with long narrow necks. The stork reaches her long beak into her jar and eats happily; the fox sniffs at the narrow neck of his jar, cannot reach the food, and sits back disappointed, ears drooping."
+      },
+      "creator": {
+       "@type": "SoftwareApplication",
+       "name": "MiniMax H3",
+       "applicationSubCategory": "Omni Reference with universe/refs/fox-stork-sheet2.png (Midjourney sheet; the first sheet was rejected by moderation twice)",
+       "provider": {
+        "@type": "Organization",
+        "name": "MiniMax"
+       }
+      },
+      "dateCreated": "2026-10-10",
+      "videoQuality": "768p",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 190,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "../assets/h3-dinners-1.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     },
+     {
+      "OTIO_SCHEMA": "Gap.1",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 0,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 759,
+        "rate": 30
+       }
+      }
+     },
+     {
+      "OTIO_SCHEMA": "Clip.2",
+      "@id": "#fable/fox-and-stork/generated/2",
+      "@type": "VideoObject",
+      "name": "h3-dinners-1.mp4",
+      "startFrame": 1871,
+      "description": "the stork's dinner: by the pond two tall jars; she dips her beak deep into hers and eats; the fox sniffs the narrow neck of his, grabs it, gets nothing and sits back glum",
+      "isBasedOn": {
+       "@id": "#fable/fox-and-stork/generated/2/prompt",
+       "@type": "CreativeWork",
+       "name": "Prompt",
+       "text": "Hand-painted watercolour storybook animation, loose dark-brown ink outlines, paper texture, warm daylight. The fox and the stork exactly as in the reference image. Static side-on camera at table height, medium-wide shot, the action kept in the centre of the frame. No dialogue, no text.\n\n0-7 s, the fox's dinner: a sunny garden with a low wooden table. The fox serves soup in two wide, flat, shallow plates. The fox happily finishes his plate; the stork taps at her flat plate with the tip of her long beak again and again but cannot eat any.\n\n7.5-15 s, the stork's dinner: a reed bed beside a pond. The stork serves dinner in two tall clay jars with long narrow necks. The stork reaches her long beak into her jar and eats happily; the fox sniffs at the narrow neck of his jar, cannot reach the food, and sits back disappointed, ears drooping."
+      },
+      "creator": {
+       "@type": "SoftwareApplication",
+       "name": "MiniMax H3",
+       "applicationSubCategory": "Omni Reference with universe/refs/fox-stork-sheet2.png (Midjourney sheet; the first sheet was rejected by moderation twice)",
+       "provider": {
+        "@type": "Organization",
+        "name": "MiniMax"
+       }
+      },
+      "dateCreated": "2026-10-10",
+      "videoQuality": "768p",
+      "source_range": {
+       "OTIO_SCHEMA": "TimeRange.1",
+       "start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 231,
+        "rate": 30
+       },
+       "duration": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "value": 231,
+        "rate": 30
+       }
+      },
+      "media_references": {
+       "DEFAULT_MEDIA": {
+        "OTIO_SCHEMA": "ExternalReference.1",
+        "target_url": "../assets/h3-dinners-1.mp4"
+       }
+      },
+      "active_media_reference_key": "DEFAULT_MEDIA"
+     }
+    ]
+   }
+  ]
+ }
+}
