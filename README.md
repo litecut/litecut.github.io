@@ -37,3 +37,5 @@ are OTIO + JSON-LD).
 ## License
 
 AGPL-3.0-or-later
+
+Making films, timelines and libraries for LiteCut (for people and AI agents): [SKILL.md](SKILL.md).

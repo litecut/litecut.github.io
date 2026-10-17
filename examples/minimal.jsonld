@@ -1,0 +1,36 @@
+{
+ "@context": {"@vocab": "https://schema.org/"},
+ "@type": "Movie",
+ "@id": "#film",
+ "OTIO_SCHEMA": "Timeline.1",
+ "name": "My first film",
+ "abstract": "One sentence about it.",
+ "video": {"@type": "VideoObject", "contentUrl": "film.mp4"},
+ "global_start_time": null,
+ "tracks": {
+  "OTIO_SCHEMA": "Stack.1", "name": "tracks",
+  "children": [
+   {"OTIO_SCHEMA": "Track.1", "name": "Shots", "kind": "Video", "children": [
+    {"OTIO_SCHEMA": "Clip.2", "@id": "#shot/1", "name": "Wide on the river",
+     "isBasedOn": {"@type": "CreativeWork", "text": "a wide shot of a slow river at dawn, mist, 2D cartoon"},
+     "source_range": {"OTIO_SCHEMA": "TimeRange.1", "start_time": {"OTIO_SCHEMA": "RationalTime.1", "rate": 30, "value": 0}, "duration": {"OTIO_SCHEMA": "RationalTime.1", "rate": 30, "value": 150}},
+     "media_references": {"DEFAULT_MEDIA": {"OTIO_SCHEMA": "ExternalReference.1", "target_url": "film.mp4"}}, "active_media_reference_key": "DEFAULT_MEDIA"}
+   ]},
+   {"OTIO_SCHEMA": "Track.1", "name": "Dialogue", "kind": "Audio", "children": [
+    {"OTIO_SCHEMA": "Gap.1", "source_range": {"OTIO_SCHEMA": "TimeRange.1", "start_time": {"OTIO_SCHEMA": "RationalTime.1", "rate": 30, "value": 0}, "duration": {"OTIO_SCHEMA": "RationalTime.1", "rate": 30, "value": 30}}},
+    {"OTIO_SCHEMA": "Clip.2", "@id": "#line/L1", "@type": "Quotation", "name": "L1 Narrator",
+     "text": "Once, by a slow river, there lived a heron.", "description": "warm, unhurried",
+     "spokenByCharacter": {"@type": "Person", "name": "Narrator"},
+     "source_range": {"OTIO_SCHEMA": "TimeRange.1", "start_time": {"OTIO_SCHEMA": "RationalTime.1", "rate": 30, "value": 0}, "duration": {"OTIO_SCHEMA": "RationalTime.1", "rate": 30, "value": 90}},
+     "media_references": {"DEFAULT_MEDIA": {"OTIO_SCHEMA": "ExternalReference.1", "target_url": "voice/L1.m4a"}}, "active_media_reference_key": "DEFAULT_MEDIA"}
+   ]},
+   {"OTIO_SCHEMA": "Track.1", "name": "Effects", "kind": "Audio", "children": [
+    {"OTIO_SCHEMA": "Gap.1", "source_range": {"OTIO_SCHEMA": "TimeRange.1", "start_time": {"OTIO_SCHEMA": "RationalTime.1", "rate": 30, "value": 0}, "duration": {"OTIO_SCHEMA": "RationalTime.1", "rate": 30, "value": 120}}},
+    {"OTIO_SCHEMA": "Clip.2", "@id": "#fx/1", "name": "splash", "kind": "splash", "anchor": "line:L1+0", "gain": 0.5,
+     "creditText": "CC0, Freesound", "contentUrl": "sfx/splash.m4a",
+     "source_range": {"OTIO_SCHEMA": "TimeRange.1", "start_time": {"OTIO_SCHEMA": "RationalTime.1", "rate": 30, "value": 0}, "duration": {"OTIO_SCHEMA": "RationalTime.1", "rate": 30, "value": 30}},
+     "media_references": {"DEFAULT_MEDIA": {"OTIO_SCHEMA": "ExternalReference.1", "target_url": "sfx/splash.m4a"}}, "active_media_reference_key": "DEFAULT_MEDIA"}
+   ]}
+  ]
+ }
+}
