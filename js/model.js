@@ -60,7 +60,7 @@ export function fromTimeline(doc, base = '') {
       if (isGap(n)) { pos += d; continue; }
       if (!isClip(n)) continue;
       const url = mediaUrl(n);
-      clips.push({start: pos, dur: d, node: n, film: !!url && !!video && sameMedia(url, video)});
+      clips.push({start: pos, dur: d, node: n, film: n.aligned === true || (!!url && !!video && sameMedia(url, video))});  // film: the media runs with the timeline (the film itself, or a stem)
       for (const m of n.markers || []) {
         const ms = val(m.marked_range?.start_time) - val(n.source_range?.start_time) + pos;
         markers.push({start: ms, dur: val(m.marked_range?.duration), name: m.name, color: m.color, type: m['@type'] || '', node: m});
@@ -81,8 +81,8 @@ export function mediaUrl(n) {
 }
 const sameMedia = (a, b) => a.split('/').pop() === b.split('/').pop();
 
-/** Write the lanes back into the document: each track's children become its clips in order with Gaps between them. Film-backed
- *  clips (whose media is the film itself) keep their source start equal to their timeline start, so they stay in sync. */
+/** Write the lanes back into the document: each track's children become its clips in order with Gaps between them; each clip
+ *  keeps its in-point (source start) and takes its new duration. */
 export function toTimeline(model) {
   const {doc, fps} = model;
   for (const lane of model.lanes) {
@@ -91,8 +91,8 @@ export function toTimeline(model) {
     for (const c of [...lane.clips].sort((a, b) => a.start - b.start)) {
       const start = Math.max(c.start, pos);
       if (start > pos) kids.push({OTIO_SCHEMA: 'Gap.1', source_range: TR(0, start - pos, fps)});
-      const src = c.film ? start : val(c.node.source_range?.start_time);
-      c.node.source_range = TR(src, c.dur, fps);
+      // a clip keeps its in-point when it moves (as in any editor): a moved line plays its own words at its new place
+      c.node.source_range = TR(val(c.node.source_range?.start_time), c.dur, fps);
       kids.push(c.node);
       pos = start + c.dur;
     }
@@ -123,7 +123,7 @@ export function trimClip(model, clip, side, frames) {
   if (side === 'start') {
     const d = Math.max(-clip.start, Math.min(f, clip.dur - 1));
     clip.start += d; clip.dur -= d;
-    if (!clip.film && clip.node.source_range) {
+    if (clip.node.source_range) {
       const s = val(clip.node.source_range.start_time) + d;
       clip.node.source_range = TR(Math.max(0, s), clip.dur, model.fps);
     }
@@ -138,7 +138,7 @@ export function splitClip(model, lane, clip, at) {
   if (node2['@id']) node2['@id'] += `/split-${Date.now().toString(36)}`;
   if (node2.anchor) node2.anchor = shiftAnchor(node2.anchor, cut);
   const src = val(clip.node.source_range?.start_time);
-  node2.source_range = TR(clip.film ? clip.start + cut : src + cut, clip.dur - cut, model.fps);
+  node2.source_range = TR(src + cut, clip.dur - cut, model.fps);
   const c2 = {start: clip.start + cut, dur: clip.dur - cut, node: node2, film: clip.film};
   clip.dur = cut;
   lane.clips.splice(lane.clips.indexOf(clip) + 1, 0, c2);

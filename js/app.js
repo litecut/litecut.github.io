@@ -1,6 +1,7 @@
 // LiteCut app: load a timeline (OTIO, OTIO + JSON-LD, an OTIO collection, a library of films, or the 0.0.x proof-of-concept
 // formats) from ?project=<url>, ?library=<url>, ?track=<video>, a file or the library; show it as lanes over the film; move, trim,
 // split and delete clips; edit prompts and directions; save in the browser, download, or PUT back to its URL (a Solid pod).
+import {createMix} from './audio.js';
 import {VERSION, detect, libraryItems, collectionItems, fromTimeline, toTimeline, fromLegacy, fromVideo, moveClip, trimClip, splitClip,
   deleteClip, describe, setPath, resolve} from './model.js';
 
@@ -9,8 +10,10 @@ const $ = (id) => document.getElementById(id);
 const video = $('video'), lanesEl = $('lanes'), headsEl = $('heads'), rulerEl = $('ruler'), canvas = $('canvas'), scroller = $('scroller');
 let model = null, srcUrl = null, sel = null, undo = [], pxPerFrame = 2, films = [], tab = 'films';
 $('ver').textContent = 'v' + VERSION;
+const mix = createMix(video, () => model, (t) => status(t));
 
-const status = (t) => { $('status').textContent = t; if (t) setTimeout(() => { if ($('status').textContent === t) $('status').textContent = ''; }, 4000); };
+let mixState = '';
+const status = (t) => { if (/^(Live mix|No playable)/.test(t)) mixState = t; $('status').textContent = t; if (t && t !== mixState) setTimeout(() => { if ($('status').textContent === t) $('status').textContent = mixState; }, 4000); };  // the mix state stays shown
 const fmt = (frames) => { const s = frames / (model?.fps || 30); return `${Math.floor(s / 60)}:${(s % 60).toFixed(1).padStart(4, '0')}`; };
 const MARK = {YELLOW: '#d4a017', ORANGE: '#e07b2a', GREEN: '#2e9d5b', CYAN: '#2a8fb0', PURPLE: '#8a5bd0', RED: '#d04545', BLUE: '#3d6be0', PINK: '#d0508a', MAGENTA: '#b040a0'};
 const colour = (name) => { const k = (name || '').toLowerCase().split(' ')[0]; return getComputedStyle(document.documentElement).getPropertyValue(`--c-${k}`).trim() || 'var(--c-other)'; };
@@ -20,6 +23,7 @@ async function fetchJson(url) { const r = await fetch(url); if (!r.ok) throw new
 
 async function open(url) {
   try {
+    url = new URL(url, location.href).href;  // a relative ?project= resolves against this page, so media paths resolve against the timeline
     status('Loading…');
     const doc = await fetchJson(url);
     await openDoc(doc, url);
@@ -49,6 +53,7 @@ function load(doc, url) {
   $('zoom').value = pxPerFrame;
   render(); inspect(null); status('');
   if (!films.length) setTab('lines'); else if (!$('library').hidden && tab !== 'films') drawPanel();
+  mix.stop(); mix.prepare();
 }
 
 function showLibrary(items) { films = items; $('library').hidden = false; setTab('films'); }
@@ -101,8 +106,8 @@ function render() {
   headsEl.replaceChildren(...model.lanes.map((l) => {
     const h = document.createElement('div'); h.className = 'head';
     const n = document.createElement('span'); n.className = 'n'; n.textContent = l.name; n.style.borderLeft = `4px solid ${colour(l.name)}`; n.style.paddingLeft = '6px'; n.title = `${l.name} (${l.kind}, ${l.clips.length} clips)`;
-    const mb = document.createElement('button'); mb.textContent = 'M'; mb.title = 'Mute'; mb.className = l.mute ? 'on' : ''; mb.onclick = () => { l.mute = !l.mute; render(); };
-    const sb = document.createElement('button'); sb.textContent = 'S'; sb.title = 'Solo'; sb.className = l.solo ? 'on' : ''; sb.onclick = () => { l.solo = !l.solo; render(); };
+    const mb = document.createElement('button'); mb.textContent = 'M'; mb.title = 'Mute'; mb.className = l.mute ? 'on' : ''; mb.onclick = () => { l.mute = !l.mute; render(); mix.restart(); };
+    const sb = document.createElement('button'); sb.textContent = 'S'; sb.title = 'Solo'; sb.className = l.solo ? 'on' : ''; sb.onclick = () => { l.solo = !l.solo; render(); mix.restart(); };
     h.append(n, mb, sb); return h;
   }));
   const anySolo = model.lanes.some((l) => l.solo);
@@ -144,7 +149,7 @@ function grab(e, lane, clip, mode) {
     else { const back = s0 - clip.start; trimClip(model, clip, 'start', back); trimClip(model, clip, 'start', df); }
     render();
   };
-  const onUp = () => { removeEventListener('pointermove', onMove); removeEventListener('pointerup', onUp); if (moved) { toTimeline(model); inspect(sel); } };
+  const onUp = () => { removeEventListener('pointermove', onMove); removeEventListener('pointerup', onUp); if (moved) { toTimeline(model); inspect(sel); mix.restart(); } };
   addEventListener('pointermove', onMove); addEventListener('pointerup', onUp);
 }
 function select(lane, clip) { sel = clip ? {lane, clip} : null; render(); inspect(sel); }
@@ -160,7 +165,7 @@ function inspect(s) {
     const wrap = document.createElement('div'); wrap.className = 'field';
     const lab = document.createElement('label'); lab.textContent = f.label;
     const inp = document.createElement(String(f.value).length > 40 ? 'textarea' : 'input'); inp.value = f.value; if (inp.tagName === 'TEXTAREA') inp.rows = Math.min(8, Math.ceil(String(f.value).length / 40));
-    inp.onchange = () => { snapshot(); setPath(clip.node, f.path, inp.value); render(); status(`${f.label} changed`); };
+    inp.onchange = () => { snapshot(); setPath(clip.node, f.path, inp.value); render(); status(`${f.label} changed`); mix.restart(); };
     wrap.append(lab, inp); parts.push(wrap);
   }
   box.replaceChildren(...parts);
@@ -217,8 +222,8 @@ addEventListener('keydown', (e) => {
   else if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); restore(); }
   else if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveLocal(); }
   else if (!model || !sel) return;
-  else if (e.key === 's' || e.key === 'S') { snapshot(); const c2 = splitClip(model, sel.lane, sel.clip, video.currentTime * model.fps); if (c2) { toTimeline(model); render(); status('Split'); } else undo.pop(); }
-  else if (e.key === 'Delete' || e.key === 'Backspace') { snapshot(); deleteClip(model, sel.lane, sel.clip); toTimeline(model); select(null, null); status('Deleted'); }
+  else if (e.key === 's' || e.key === 'S') { snapshot(); const c2 = splitClip(model, sel.lane, sel.clip, video.currentTime * model.fps); if (c2) { toTimeline(model); render(); status('Split'); mix.restart(); } else undo.pop(); }
+  else if (e.key === 'Delete' || e.key === 'Backspace') { snapshot(); deleteClip(model, sel.lane, sel.clip); toTimeline(model); select(null, null); status('Deleted'); mix.restart(); }
   else if (e.key === 'Escape') select(null, null);
 });
 
