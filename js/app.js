@@ -190,6 +190,7 @@ async function putBack() {
 
 // ── controls ──
 $('b-play').onclick = () => (video.paused ? video.play() : video.pause());
+video.onclick = () => $('b-play').click();  // a click on the picture plays and pauses, as in a web player (nothing in the preview is selectable yet)
 video.onplay = () => ($('b-play').textContent = 'Pause'); video.onpause = () => ($('b-play').textContent = 'Play');
 video.ontimeupdate = drawPlayhead;
 (function tick() { if (!video.paused) drawPlayhead(); requestAnimationFrame(tick); })();

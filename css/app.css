@@ -44,3 +44,4 @@ video{max-width:100%;max-height:calc(100% - 40px);background:#000;border-radius:
 .tabs{display:flex;gap:4px;padding:8px 8px 0}.tabs button{flex:1;padding:4px 6px;font-size:12px}.tabs button.on{border-color:var(--accent);color:var(--accent);background:var(--panel)}
 #lib-list li .t{color:var(--dim);font-size:11px;margin-right:6px;font-variant-numeric:tabular-nums}#lib-list li .w{font-weight:600;margin-right:4px}
 #lib-list li .d{display:block;color:var(--dim);font-size:11px}
+video{cursor:pointer}
