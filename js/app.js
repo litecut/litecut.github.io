@@ -231,7 +231,7 @@ async function putBack() {
 // ── controls ──
 $('b-play').onclick = () => (video.paused ? video.play() : video.pause());
 video.onclick = () => $('b-play').click();  // a click on the picture plays and pauses, as in a web player (nothing in the preview is selectable yet)
-video.onplay = () => ($('b-play').textContent = 'Pause'); video.onpause = () => ($('b-play').textContent = 'Play');
+video.onplay = () => ($('b-play').textContent = '❚❚ Pause'); video.onpause = () => ($('b-play').textContent = '▶ Play');
 video.ontimeupdate = drawPlayhead;
 (function tick() { if (!video.paused) drawPlayhead(); requestAnimationFrame(tick); })();
 // a still instead of a black box: until the first play, show a frame a few seconds in (past a title card), then play from the start
@@ -260,7 +260,9 @@ $('f-open').onchange = async (e) => { const f = e.target.files[0]; if (f) openDo
 $('b-undo').onclick = restore; $('b-save').onclick = saveLocal; $('b-download').onclick = download; $('b-put').onclick = putBack;
 addEventListener('resize', render);
 addEventListener('keydown', (e) => {
-  if (/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) return;
+  const ae = document.activeElement;
+  if (/INPUT|TEXTAREA/.test(ae?.tagName) && ae.type !== 'range') return;
+  if (ae?.type === 'range' && /^(Arrow|Home|End| )/.test(e.key)) e.preventDefault();  // ours, not the slider's own step
   if (e.key === ' ') { e.preventDefault(); $('b-play').click(); }
   else if (e.key === 'Home') { e.preventDefault(); seek(0); }
   else if (e.key === 'End') { e.preventDefault(); seek(Infinity); }

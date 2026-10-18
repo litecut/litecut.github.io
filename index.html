@@ -47,13 +47,13 @@
   </aside>
   <section class="viewer">
     <video id="video" playsinline preload="auto"></video>
-    <div class="transport"><button id="b-start" title="Back to the start (Home)" aria-label="Back to the start">⏮ Start</button><button id="b-play" aria-label="Play">Play</button><input type="range" id="seek" min="0" max="1" step="0.01" value="0" aria-label="Position: drag to jump" title="Drag to jump anywhere"><span id="time">0:00.0 / 0:00.0</span><span id="status" role="status"></span></div>
+    <div class="transport"><button id="b-start" title="Back to the start (Home)" aria-label="Back to the start">⏮ Start</button><button id="b-play" aria-label="Play">▶ Play</button><input type="range" id="seek" min="0" max="1" step="0.01" value="0" aria-label="Position: drag to jump" title="Drag to jump anywhere"><span id="time">0:00.0 / 0:00.0</span><span id="status" role="status"></span></div>
   </section>
   <aside class="inspector" id="inspector"><p class="hint">Select a clip to see its prompt, direction and credits.</p></aside>
 </main>
 <section class="timeline" id="timeline" tabindex="0" aria-label="Timeline">
   <div class="tl-tools"><label>Zoom <input type="range" id="zoom" min="0.2" max="12" step="0.1" value="1"></label>
-    <span class="keys">Click or drag the ruler to jump · Home start · ←/→ 1 s · Space play · S split · Del delete · drag to move · drag edges to trim · Ctrl+Z undo</span></div>
+    <span class="keys">Jump: drag the bar or the ruler · Home/End · ←/→ 1 s · Space play · S split · Del delete · drag clips to move, edges to trim · Ctrl+Z undo</span></div>
   <div class="tl-body" id="tl-body">
     <div class="heads" id="heads"></div>
     <div class="scroller" id="scroller"><div class="canvas" id="canvas"><div class="ruler" id="ruler"></div><div class="lanes" id="lanes"></div><div class="playhead" id="playhead"></div></div></div>
