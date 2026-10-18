@@ -6,7 +6,7 @@ import {mediaUrl, resolve} from './model.js';
 export function createMix(video, getModel, status) {
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
   const cache = new Map();          // url -> Promise<AudioBuffer|null>
-  let playing = [], ready = false, epoch = 0;
+  let playing = [], ready = false, epoch = 0, gen = 0;  // gen: a start() superseded by a later start() or stop() schedules nothing
 
   const audioClips = (m) => {
     const anySolo = m.lanes.some((l) => l.solo), out = [];
@@ -41,17 +41,19 @@ export function createMix(video, getModel, status) {
     if (!video.paused) start();
   }
 
-  function stop() { for (const s of playing) { try { s.stop(); } catch {} } playing = []; }
+  function stop() { gen++; for (const s of playing) { try { s.stop(); } catch {} } playing = []; }
 
   async function start() {
     stop();
     if (!ready) return;
+    const my = gen;  // two starts can overlap (play, then the rewind's seeked): only the last one may schedule, or the mix plays twice
     const m = getModel(), t0 = video.currentTime, fps = m.fps, fxGain = Number(m.doc.effectsGain) || 1;
     if (ctx.state === 'suspended') await ctx.resume();
+    if (my !== gen) return;
     const now = ctx.currentTime + 0.05;
     for (const a of audioClips(m)) {
       if (!a.audible) continue;
-      const buf = await buffer(a.url); if (!buf) continue;
+      const buf = await buffer(a.url); if (my !== gen) return; if (!buf) continue;
       const s = a.clip.start / fps, d = a.clip.dur / fps, end = s + d;
       if (end <= t0) continue;
       const src0 = Number(a.clip.node.source_range?.start_time?.value || 0) / fps;  // the clip's in-point in its media
