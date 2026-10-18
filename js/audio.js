@@ -6,6 +6,8 @@ import {mediaUrl, resolve} from './model.js';
 export function createMix(video, getModel, status) {
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
   const cache = new Map();          // url -> Promise<AudioBuffer|null>
+  const failed = new Set();
+  const log = [];                   // debug: one entry per start(): {t0, n} scheduled, or {t0, bailed}         // urls that could not be fetched or decoded (the debug hook lists them)
   let playing = [], ready = false, epoch = 0, gen = 0;  // gen: a start() superseded by a later start() or stop() schedules nothing
 
   const audioClips = (m) => {
@@ -22,7 +24,7 @@ export function createMix(video, getModel, status) {
     return out;
   };
   const buffer = (url) => {
-    if (!cache.has(url)) cache.set(url, fetch(url).then((r) => (r.ok ? r.arrayBuffer() : null)).then((b) => (b ? ctx.decodeAudioData(b) : null)).catch((e) => { console.warn('LiteCut: cannot play', url, e?.message || e); return null; }));
+    if (!cache.has(url)) cache.set(url, fetch(url).then((r) => (r.ok ? r.arrayBuffer() : null)).then((b) => (b ? ctx.decodeAudioData(b) : null)).then((b) => { if (!b) failed.add(url); return b; }).catch((e) => { failed.add(url); console.warn('LiteCut: cannot play', url, e?.message || e); return null; }));
     return cache.get(url);
   };
 
@@ -46,14 +48,15 @@ export function createMix(video, getModel, status) {
   async function start() {
     stop();
     if (!ready) return;
+    const entry = {t0: +video.currentTime.toFixed(2)}; log.push(entry); if (log.length > 50) log.shift();
     const my = gen;  // two starts can overlap (play, then the rewind's seeked): only the last one may schedule, or the mix plays twice
     const m = getModel(), t0 = video.currentTime, fps = m.fps, fxGain = Number(m.doc.effectsGain) || 1;
     if (ctx.state === 'suspended') await ctx.resume();
-    if (my !== gen) return;
+    if (my !== gen) { entry.bailed = 'resume'; return; }
     const now = ctx.currentTime + 0.05;
     for (const a of audioClips(m)) {
       if (!a.audible) continue;
-      const buf = await buffer(a.url); if (my !== gen) return; if (!buf) continue;
+      const buf = await buffer(a.url); if (my !== gen) { entry.bailed = 'buffer'; return; } if (!buf) continue;
       const s = a.clip.start / fps, d = a.clip.dur / fps, end = s + d;
       if (end <= t0) continue;
       const src0 = Number(a.clip.node.source_range?.start_time?.value || 0) / fps;  // the clip's in-point in its media
@@ -65,10 +68,11 @@ export function createMix(video, getModel, status) {
       node.start(now + Math.max(0, s - t0), off, len);
       playing.push(node);
     }
+    entry.n = playing.length;
   }
 
   video.addEventListener('play', () => start());
   video.addEventListener('pause', stop);
   video.addEventListener('seeked', () => { if (!video.paused) start(); });
-  return {prepare, restart: () => { if (!video.paused) start(); }, stop};
+  return {prepare, restart: () => { if (!video.paused) start(); }, stop, playing: () => playing.length, audible: () => audioClips(getModel()).filter((a) => a.audible).length, failed: () => [...failed], log: () => log};
 }

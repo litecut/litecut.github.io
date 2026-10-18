@@ -16,6 +16,7 @@ let model = null, srcUrl = null, sel = null, undo = [], pxPerFrame = 2, films = 
 $('ver').textContent = 'v' + VERSION;
 let fresh = true;  // true until the first play or jump (see drawPlayhead and onloadedmetadata)
 const mix = createMix(video, () => model, (t) => status(t));
+window.litecut = {get playing() { return mix.playing(); }, get audible() { return mix.audible(); }, get failed() { return mix.failed(); }, get log() { return mix.log(); }};  // a debug hook: sources scheduled now vs clips that should be (equal while playing; more = a double schedule)
 
 let mixState = '';
 const status = (t) => { if (/^(Live mix|No playable)/.test(t)) mixState = t; $('status').textContent = t; if (t && t !== mixState) setTimeout(() => { if ($('status').textContent === t) $('status').textContent = mixState; }, 4000); };  // the mix state stays shown
@@ -229,7 +230,11 @@ async function putBack() {
 }
 
 // ── controls ──
-$('b-play').onclick = () => (video.paused ? video.play() : video.pause());
+$('b-play').onclick = () => {
+  if (!video.paused) return video.pause();
+  if (fresh) { fresh = false; video.currentTime = 0; }  // rewind BEFORE play: the live mix reads its start time on 'play', and a rewind after it gave a burst of sound from the 3.5 s still, then the start again
+  video.play();
+};
 video.onclick = () => $('b-play').click();  // a click on the picture plays and pauses, as in a web player (nothing in the preview is selectable yet)
 video.onplay = () => ($('b-play').textContent = '❚❚ Pause'); video.onpause = () => ($('b-play').textContent = '▶ Play');
 video.ontimeupdate = drawPlayhead;
