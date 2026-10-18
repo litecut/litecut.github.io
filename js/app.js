@@ -14,6 +14,7 @@ const $ = (id) => document.getElementById(id);
 const video = $('video'), lanesEl = $('lanes'), headsEl = $('heads'), rulerEl = $('ruler'), canvas = $('canvas'), scroller = $('scroller');
 let model = null, srcUrl = null, sel = null, undo = [], pxPerFrame = 2, films = [], tab = 'films';
 $('ver').textContent = 'v' + VERSION;
+let fresh = true;  // true until the first play or jump (see drawPlayhead and onloadedmetadata)
 const mix = createMix(video, () => model, (t) => status(t));
 
 let mixState = '';
@@ -157,7 +158,12 @@ function render() {
   headsEl.style.marginTop = `${-scroller.scrollTop}px`;
   drawPlayhead();
 }
-function drawPlayhead() { if (model) $('playhead').style.left = `${video.currentTime * model.fps * pxPerFrame}px`; $('time').textContent = model ? `${fmt(video.currentTime * model.fps)} / ${fmt(model.duration)}` : ''; }
+function drawPlayhead() {
+  const t = fresh ? 0 : video.currentTime;  // before the first play the picture is a still from a few seconds in, but Play starts at 0:00
+  if (model) $('playhead').style.left = `${t * model.fps * pxPerFrame}px`;
+  $('time').textContent = model ? `${fmt(t * model.fps)} / ${fmt(model.duration)}` : '';
+  const sk = $('seek'); if (model && document.activeElement !== sk) { sk.max = String(model.duration / model.fps || 1); sk.value = String(t); }
+}
 
 // ── editing ──
 const snapshot = () => { undo.push(JSON.stringify(toTimeline(model))); if (undo.length > 100) undo.shift(); };
@@ -229,15 +235,23 @@ video.onplay = () => ($('b-play').textContent = 'Pause'); video.onpause = () => 
 video.ontimeupdate = drawPlayhead;
 (function tick() { if (!video.paused) drawPlayhead(); requestAnimationFrame(tick); })();
 // a still instead of a black box: until the first play, show a frame a few seconds in (past a title card), then play from the start
-let fresh = true;
 video.onloadedmetadata = () => {
   if (model && !model.duration) { const doc = fromVideo(model.video, video.duration); load(doc, srcUrl); return; }
   if (video.paused && video.currentTime === 0) { fresh = true; video.currentTime = Math.min(3.5, video.duration * 0.1); }
 };
 video.addEventListener('play', () => { if (fresh) { fresh = false; video.currentTime = 0; } });
-rulerEl.addEventListener('click', () => { fresh = false; });
-rulerEl.onclick = (e) => { const r = canvas.getBoundingClientRect(); video.currentTime = Math.max(0, (e.clientX - r.left) / pxPerFrame / model.fps); drawPlayhead(); };
-lanesEl.onclick = (e) => { if (e.target === lanesEl || e.target.classList.contains('lane')) select(null, null); };
+// jumping to a time: the scrubber, a click or drag on the ruler or on empty lane space, the Start button and keys all go through seek()
+function seek(sec) { if (!model) return; fresh = false; video.currentTime = Math.max(0, Math.min(sec, model.duration / model.fps)); drawPlayhead(); }
+const atX = (e) => (e.clientX - canvas.getBoundingClientRect().left) / pxPerFrame / model.fps;
+rulerEl.onpointerdown = (e) => {
+  if (!model) return; e.preventDefault(); rulerEl.setPointerCapture(e.pointerId); seek(atX(e));
+  rulerEl.onpointermove = (m) => seek(atX(m));
+  rulerEl.onpointerup = rulerEl.onpointercancel = () => { rulerEl.onpointermove = null; };
+};
+lanesEl.onclick = (e) => { if (e.target === lanesEl || e.target.classList.contains('lane')) { select(null, null); seek(atX(e)); } };
+$('seek').oninput = (e) => seek(Number(e.target.value));
+$('seek').onchange = () => $('seek').blur();
+$('b-start').onclick = () => seek(0);
 scroller.onscroll = () => { headsEl.style.marginTop = `${-scroller.scrollTop}px`; };
 $('zoom').oninput = (e) => { pxPerFrame = Number(e.target.value); render(); };
 $('b-library').onclick = () => { const lib = $('library'); if (!films.length) open(new URLSearchParams(location.search).get('library') || DEFAULT_LIBRARY); else lib.hidden = !lib.hidden; };
@@ -248,6 +262,9 @@ addEventListener('resize', render);
 addEventListener('keydown', (e) => {
   if (/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) return;
   if (e.key === ' ') { e.preventDefault(); $('b-play').click(); }
+  else if (e.key === 'Home') { e.preventDefault(); seek(0); }
+  else if (e.key === 'End') { e.preventDefault(); seek(Infinity); }
+  else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); seek(video.currentTime + (e.key === 'ArrowLeft' ? -1 : 1) * (e.shiftKey ? 5 : 1)); }
   else if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); restore(); }
   else if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveLocal(); }
   else if (!model || !sel) return;

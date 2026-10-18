@@ -3,7 +3,7 @@
 // every field it does not understand (prompts, directions, credits, @id) is carried through untouched.
 // Pure functions only (no DOM), so they run in the browser and under node for the tests.
 
-export const VERSION = '0.0.1';
+export const VERSION = '0.0.2';
 
 const RT = (value, rate) => ({OTIO_SCHEMA: 'RationalTime.1', value, rate});
 const TR = (start, dur, rate) => ({OTIO_SCHEMA: 'TimeRange.1', start_time: RT(start, rate), duration: RT(dur, rate)});
